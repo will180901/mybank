@@ -573,3 +573,9 @@ void fenMain::on_btn_aide_et_supports_barre_latterale_clicked()
             );
     }
 }
+
+void fenMain::on_btn_notification_clicked()
+{
+    WidgetNotificationModerne::afficherInformation("Notification", "Aucune nouvelle notification", this);
+}
+

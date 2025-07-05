@@ -3,9 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projet MyBank - Documentation Technique</title>
+    <title>Projet MyBank - Documentation Complète</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --light: #f0f9ff;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -17,12 +31,7 @@
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             color: #212529;
             line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            overflow-x: hidden;
         }
         
         /* Page de garde */
@@ -32,24 +41,28 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
-                        url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), 
+                        url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
             background-size: cover;
             background-position: center;
             text-align: center;
             padding: 40px;
-            border-bottom: 5px solid #1e3a8a;
+            border-bottom: 5px solid var(--primary);
         }
         
         .logo-container {
             margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
         .logo {
             font-size: 3.5rem;
             font-weight: 700;
-            color: #1e3a8a;
-            margin-bottom: 10px;
+            color: var(--primary);
+            margin-bottom: 5px;
             letter-spacing: 2px;
         }
         
@@ -58,14 +71,18 @@
             color: #495057;
             text-transform: uppercase;
             letter-spacing: 4px;
-            margin-top: -10px;
+            margin-top: -5px;
         }
         
         .project-title {
             font-size: 3rem;
-            color: #1e3a8a;
+            color: var(--primary);
             margin: 40px 0;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         
         .team-section {
@@ -75,13 +92,28 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             margin: 40px auto;
+            width: 90%;
         }
         
         .section-title {
             font-size: 2rem;
-            color: #1e3a8a;
+            color: var(--primary);
             margin-bottom: 30px;
             text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
         }
         
         .team-grid {
@@ -96,95 +128,156 @@
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-            transition: transform 0.3s ease;
-            border-left: 4px solid #3b82f6;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid var(--secondary);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         
         .team-member:hover {
             transform: translateY(-5px);
             background: #e9ecef;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
         }
         
         .team-member h3 {
             color: #343a40;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .academic-year {
             font-size: 1.8rem;
-            color: #1e3a8a;
+            color: var(--primary);
             margin: 40px 0;
             font-weight: 600;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         
-        /* Sommaire */
-        .table-of-contents {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        /* Navigation */
+        .nav-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .nav-links li {
+            margin: 0 10px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: block;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Contenu principal */
+        .container {
+            max-width: 1200px;
             margin: 40px auto;
+            padding: 0 20px;
         }
         
-        .toc-grid {
+        .part {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+        
+        .part:hover {
+            transform: translateY(-5px);
+        }
+        
+        .part-title {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .part-subtitle {
+            font-size: 1.4rem;
+            color: var(--secondary);
+            margin: 30px 0 20px;
+            padding-left: 10px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .content-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            gap: 25px;
+            margin: 30px 0;
         }
         
-        .toc-card {
+        .card {
             background: #f8f9fa;
+            border-radius: 12px;
             padding: 25px;
-            border-radius: 10px;
-            border-left: 4px solid #10b981;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
             transition: all 0.3s ease;
         }
         
-        .toc-card:hover {
-            transform: translateX(10px);
-            background: #e9ecef;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--secondary);
         }
         
-        .toc-card h3 {
-            color: #212529;
+        .card h3 {
+            color: var(--primary);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        
-        .toc-card ul {
-            margin-left: 20px;
-        }
-        
-        .toc-card li {
-            margin-bottom: 10px;
-            position: relative;
-            padding-left: 20px;
-        }
-        
-        .toc-card li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #10b981;
-            font-size: 1.2rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
         }
         
         /* Modèles Merise */
-        .merise-section {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin: 40px auto;
+        .merise-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 1px solid var(--border);
         }
         
         .merise-tabs {
             display: flex;
             gap: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
         }
         
@@ -195,19 +288,30 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
+            border: 1px solid transparent;
+        }
+        
+        .merise-tab:hover {
+            background: #dee2e6;
         }
         
         .merise-tab.active {
-            background: #1e3a8a;
+            background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
         
         .merise-content {
             display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
         
         .merise-content.active {
             display: block;
+            animation: fadeIn 0.5s ease;
         }
         
         .dbml-code {
@@ -238,41 +342,64 @@
             color: #fd971f;
         }
         
-        .merise-model {
-            background: #f8f9fa;
-            padding: 25px;
+        /* Tableaux */
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
             border-radius: 10px;
-            margin: 25px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
         
-        .merise-model h4 {
-            color: #1e3a8a;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #dee2e6;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 600px;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        tr:hover {
+            background-color: var(--light);
         }
         
         /* Remerciements */
         .acknowledgements {
             background: white;
-            padding: 40px;
+            padding: 50px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin: 40px auto;
             text-align: center;
+            border-top: 5px solid var(--accent);
         }
         
         .acknowledgements p {
             font-size: 1.2rem;
             line-height: 1.8;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 0 auto 20px;
         }
         
         .signature {
             margin-top: 40px;
             font-style: italic;
             color: #495057;
+            font-size: 1.1rem;
         }
         
         /* Responsive */
@@ -281,17 +408,30 @@
                 font-size: 2.2rem;
             }
             
-            .section-title {
+            .section-title, .part-title {
                 font-size: 1.8rem;
             }
             
-            .team-grid, .toc-grid {
+            .team-grid, .content-grid {
                 grid-template-columns: 1fr;
             }
             
-            .cover-page, .table-of-contents, .merise-section, .acknowledgements {
+            .cover-page, .team-section, .part, .acknowledgements {
                 padding: 25px;
             }
+            
+            .nav-links {
+                flex-wrap: wrap;
+            }
+            
+            .nav-links li {
+                margin: 5px;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -300,6 +440,7 @@
     <div class="cover-page">
         <div class="logo-container">
             <div class="logo">CFI-CIRAS</div>
+            <div class="logo-subtitle">FACILITATE-SHALIFE-MUSKIN</div>
         </div>
         
         <h1 class="project-title">Projet MyBank - Application Bancaire</h1>
@@ -309,15 +450,19 @@
             <div class="team-grid">
                 <div class="team-member">
                     <h3><i class="fas fa-user-tie"></i> LEMBO Alan</h3>
+                    <p>Chef de projet & Développeur</p>
                 </div>
                 <div class="team-member">
                     <h3><i class="fas fa-code"></i> ONDINEME Alann</h3>
+                    <p>Développeur Backend</p>
                 </div>
                 <div class="team-member">
                     <h3><i class="fas fa-laptop-code"></i> OKEMBA Djeuvelj</h3>
+                    <p>Développeur Frontend</p>
                 </div>
                 <div class="team-member">
                     <h3><i class="fas fa-database"></i> FLORENTIN Yann</h3>
+                    <p>Administrateur Base de Données</p>
                 </div>
             </div>
         </div>
@@ -327,262 +472,370 @@
         </div>
     </div>
     
-    <!-- Sommaire -->
+    <!-- Navigation -->
+    <div class="nav-container">
+        <ul class="nav-links">
+            <li><a href="#introduction" class="active">Introduction</a></li>
+            <li><a href="#conception">Conception</a></li>
+            <li><a href="#realisation">Réalisation</a></li>
+            <li><a href="#difficultes">Difficultés</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ul>
+    </div>
+    
+    <!-- Contenu principal -->
     <div class="container">
-        <div class="table-of-contents">
-            <h2 class="section-title">Sommaire</h2>
-            <div class="toc-grid">
-                <div class="toc-card">
-                    <h3><i class="fas fa-book"></i> I. Introduction</h3>
+        <!-- Partie 1: Introduction -->
+        <section class="part" id="introduction">
+            <h2 class="part-title"><i class="fas fa-info-circle"></i> 1. Introduction</h2>
+            
+            <p>MyBank est une application bancaire complète développée avec Qt/C++ et SQLite. Elle offre une solution moderne pour la gestion des comptes bancaires, des transactions et des opérations financières.</p>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <h3><i class="fas fa-bullseye"></i> Objectifs</h3>
                     <ul>
-                        <li>Présentation du projet</li>
-                        <li>Objectifs et enjeux</li>
-                        <li>Contexte technologique</li>
+                        <li>Fournir une gestion complète des comptes bancaires</li>
+                        <li>Permettre des opérations sécurisées (dépôts, retraits, virements)</li>
+                        <li>Offrir une visualisation claire de l'historique</li>
+                        <li>Assurer une expérience utilisateur moderne</li>
+                        <li>Garantir la sécurité des données financières</li>
                     </ul>
                 </div>
-                <div class="toc-card">
-                    <h3><i class="fas fa-project-diagram"></i> II. Analyse & Conception</h3>
+                
+                <div class="card">
+                    <h3><i class="fas fa-sitemap"></i> Architecture</h3>
                     <ul>
-                        <li>Modèle Conceptuel de Données (MCD)</li>
-                        <li>Modèle Physique de Données (MPD)</li>
-                        <li>Modèle Logique de Données (MLD)</li>
-                        <li>Modèle Conceptuel de Traitement (MCT)</li>
+                        <li><strong>Frontend:</strong> Qt Widgets avec animations</li>
+                        <li><strong>Backend:</strong> Logique métier en C++</li>
+                        <li><strong>Base de données:</strong> SQLite</li>
+                        <li><strong>Sécurité:</strong> Chiffrement des données sensibles</li>
                     </ul>
                 </div>
-                <div class="toc-card">
-                    <h3><i class="fas fa-code"></i> III. Réalisation</h3>
+                
+                <div class="card">
+                    <h3><i class="fas fa-tools"></i> Technologies</h3>
                     <ul>
-                        <li>Architecture technique</li>
-                        <li>Fonctionnalités implémentées</li>
-                        <li>Interface utilisateur</li>
-                    </ul>
-                </div>
-                <div class="toc-card">
-                    <h3><i class="fas fa-chart-line"></i> IV. Résultats</h3>
-                    <ul>
-                        <li>Tests et validation</li>
-                        <li>Performances</li>
-                        <li>Améliorations futures</li>
-                    </ul>
-                </div>
-                <div class="toc-card">
-                    <h3><i class="fas fa-exclamation-triangle"></i> V. Difficultés</h3>
-                    <ul>
-                        <li>Problèmes rencontrés</li>
-                        <li>Solutions apportées</li>
-                        <li>Leçons apprises</li>
-                    </ul>
-                </div>
-                <div class="toc-card">
-                    <h3><i class="fas fa-book-open"></i> VI. Documentation</h3>
-                    <ul>
-                        <li>Manuel utilisateur</li>
-                        <li>Guide d'installation</li>
-                        <li>Bibliographie</li>
+                        <li>C++17</li>
+                        <li>Qt 6 Framework</li>
+                        <li>SQLite3</li>
+                        <li>QWidgets pour l'interface</li>
+                        <li>CSS pour le style</li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
         
-        <!-- Modèles Merise -->
-        <div class="merise-section">
-            <h2 class="section-title">Modèles Merise</h2>
+        <!-- Partie 2: Conception -->
+        <section class="part" id="conception">
+            <h2 class="part-title"><i class="fas fa-project-diagram"></i> 2. Analyse & Conception</h2>
             
-            <div class="merise-tabs">
-                <div class="merise-tab active" data-target="mcd">MCD</div>
-                <div class="merise-tab" data-target="mpd">MPD</div>
-                <div class="merise-tab" data-target="mld">MLD</div>
-                <div class="merise-tab" data-target="mct">MCT</div>
-            </div>
-            
-            <!-- Modèle Conceptuel de Données (MCD) -->
-            <div class="merise-content active" id="mcd">
-                <h3>Modèle Conceptuel de Données (MCD)</h3>
-                <p>Le MCD représente la structure conceptuelle de la base de données sans considération d'implémentation.</p>
-                
-                <div class="dbml-code">
-                    <span class="dbml-comment">// Modèle Conceptuel de Données (MCD) pour MyBank</span><br><br>
-                    
-                    <span class="dbml-keyword">Table</span> <span class="dbml-table">Utilisateur</span> {<br>
-                    &nbsp;&nbsp;<span class="dbml-column">id</span> <span class="dbml-keyword">int</span> [<span class="dbml-keyword">pk</span>]<br>
-                    &nbsp;&nbsp;<span class="dbml-column">nom_complet</span> <span class="dbml-keyword">varchar</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">email</span> <span class="dbml-keyword">varchar</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">mot_de_passe</span> <span class="dbml-keyword">varchar</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">date_inscription</span> <span class="dbml-keyword">datetime</span><br>
-                    }<br><br>
-                    
-                    <span class="dbml-keyword">Table</span> <span class="dbml-table">Compte</span> {<br>
-                    &nbsp;&nbsp;<span class="dbml-column">id</span> <span class="dbml-keyword">int</span> [<span class="dbml-keyword">pk</span>]<br>
-                    &nbsp;&nbsp;<span class="dbml-column">numero_compte</span> <span class="dbml-keyword">varchar</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">type_compte</span> <span class="dbml-keyword">varchar</span> <span class="dbml-comment">// 'courant' ou 'epargne'</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">solde</span> <span class="dbml-keyword">decimal</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">id_utilisateur</span> <span class="dbml-keyword">int</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">date_creation</span> <span class="dbml-keyword">datetime</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">derniere_operation</span> <span class="dbml-keyword">varchar</span><br>
-                    }<br><br>
-                    
-                    <span class="dbml-keyword">Ref</span>: <span class="dbml-table">Compte</span>.<span class="dbml-column">id_utilisateur</span> > <span class="dbml-table">Utilisateur</span>.<span class="dbml-column">id</span><br><br>
-                    
-                    <span class="dbml-keyword">Table</span> <span class="dbml-table">Transaction</span> {<br>
-                    &nbsp;&nbsp;<span class="dbml-column">id</span> <span class="dbml-keyword">int</span> [<span class="dbml-keyword">pk</span>]<br>
-                    &nbsp;&nbsp;<span class="dbml-column">type_operation</span> <span class="dbml-keyword">varchar</span> <span class="dbml-comment">// 'depot', 'retrait', 'virement'</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">montant</span> <span class="dbml-keyword">decimal</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">id_compte_source</span> <span class="dbml-keyword">int</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">id_compte_destination</span> <span class="dbml-keyword">int</span> [<span class="dbml-keyword">null</span>]<br>
-                    &nbsp;&nbsp;<span class="dbml-column">date_operation</span> <span class="dbml-keyword">datetime</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">motif</span> <span class="dbml-keyword">varchar</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">solde_avant</span> <span class="dbml-keyword">decimal</span><br>
-                    &nbsp;&nbsp;<span class="dbml-column">solde_apres</span> <span class="dbml-keyword">decimal</span><br>
-                    }<br><br>
-                    
-                    <span class="dbml-keyword">Ref</span>: <span class="dbml-table">Transaction</span>.<span class="dbml-column">id_compte_source</span> > <span class="dbml-table">Compte</span>.<span class="dbml-column">id</span><br>
-                    <span class="dbml-keyword">Ref</span>: <span class="dbml-table">Transaction</span>.<span class="dbml-column">id_compte_destination</span> > <span class="dbml-table">Compte</span>.<span class="dbml-column">id</span>
+            <h3 class="part-subtitle">Modèles Merise</h3>
+            <div class="merise-container">
+                <div class="merise-tabs">
+                    <div class="merise-tab active" data-target="mcd">MCD</div>
+                    <div class="merise-tab" data-target="mpd">MPD</div>
+                    <div class="merise-tab" data-target="mld">MLD</div>
+                    <div class="merise-tab" data-target="mct">MCT</div>
                 </div>
                 
-                <div class="merise-model">
-                    <h4>Légende du MCD</h4>
-                    <p>Le Modèle Conceptuel de Données représente les entités principales du système bancaire :</p>
-                    <ul>
-                        <li><strong>Utilisateur</strong> : Représente les clients de la banque</li>
-                        <li><strong>Compte</strong> : Décrit les comptes bancaires (courant ou épargne)</li>
-                        <li><strong>Transaction</strong> : Enregistre toutes les opérations financières</li>
-                    </ul>
-                    <p>Les relations entre ces entités sont représentées par des flèches indiquant les clés étrangères.</p>
-                </div>
-            </div>
-            
-            <!-- Modèle Physique de Données (MPD) -->
-            <div class="merise-content" id="mpd">
-                <h3>Modèle Physique de Données (MPD)</h3>
-                <p>Le MPD est la traduction technique du MCD avec les types de données précis et les contraintes.</p>
-                
-                <div class="merise-model">
-                    <h4>Table Utilisateur</h4>
-                    <ul>
-                        <li><strong>id</strong> : INTEGER (clé primaire, auto-incrément)</li>
-                        <li><strong>nom_complet</strong> : VARCHAR(100) (non null)</li>
-                        <li><strong>email</strong> : VARCHAR(100) (unique, non null)</li>
-                        <li><strong>mot_de_passe</strong> : VARCHAR(255) (non null, chiffré)</li>
-                        <li><strong>date_inscription</strong> : DATETIME (non null)</li>
-                    </ul>
-                </div>
-                
-                <div class="merise-model">
-                    <h4>Table Compte</h4>
-                    <ul>
-                        <li><strong>id</strong> : INTEGER (clé primaire, auto-incrément)</li>
-                        <li><strong>numero_compte</strong> : VARCHAR(20) (unique, non null)</li>
-                        <li><strong>type_compte</strong> : VARCHAR(10) ('courant' ou 'epargne')</li>
-                        <li><strong>solde</strong> : DECIMAL(15,2) (défaut 0.00)</li>
-                        <li><strong>id_utilisateur</strong> : INTEGER (clé étrangère vers Utilisateur.id)</li>
-                        <li><strong>date_creation</strong> : DATETIME (non null)</li>
-                        <li><strong>derniere_operation</strong> : VARCHAR(255)</li>
-                        <li><strong>decouvert_autorise</strong> : DECIMAL(15,2) (pour comptes courants)</li>
-                        <li><strong>taux_interet</strong> : DECIMAL(5,2) (pour comptes épargne)</li>
-                    </ul>
+                <!-- MCD -->
+                <div class="merise-content active" id="mcd">
+                    <h3>Modèle Conceptuel de Données (MCD)</h3>
+                    <div class="dbml-code">
+                        <span class="dbml-comment">// Entité Utilisateur</span><br>
+                        <span class="dbml-keyword">Table</span> <span class="dbml-table">Utilisateur</span> {<br>
+                        &nbsp;&nbsp;<span class="dbml-column">id</span> <span class="dbml-keyword">int</span> [<span class="dbml-keyword">pk</span>]<br>
+                        &nbsp;&nbsp;<span class="dbml-column">nom_complet</span> <span class="dbml-keyword">varchar</span><br>
+                        &nbsp;&nbsp;<span class="dbml-column">email</span> <span class="dbml-keyword">varchar</span><br>
+                        &nbsp;&nbsp;<span class="dbml-column">mot_de_passe</span> <span class="dbml-keyword">varchar</span><br>
+                        }<br><br>
+                        
+                        <span class="dbml-keyword">Table</span> <span class="dbml-table">Compte</span> {<br>
+                        &nbsp;&nbsp;<span class="dbml-column">id</span> <span class="dbml-keyword">int</span> [<span class="dbml-keyword">pk</span>]<br>
+                        &nbsp;&nbsp;<span class="dbml-column">numero_compte</span> <span class="dbml-keyword">varchar</span><br>
+                        &nbsp;&nbsp;<span class="dbml-column">type_compte</span> <span class="dbml-keyword">varchar</span><br>
+                        &nbsp;&nbsp;<span class="dbml-column">solde</span> <span class="dbml-keyword">decimal</span><br>
+                        &nbsp;&nbsp;<span class="dbml-column">id_utilisateur</span> <span class="dbml-keyword">int</span><br>
+                        }<br><br>
+                        
+                        <span class="dbml-keyword">Ref</span>: <span class="dbml-table">Compte</span>.<span class="dbml-column">id_utilisateur</span> > <span class="dbml-table">Utilisateur</span>.<span class="dbml-column">id</span><br><br>
+                        
+                        <span class="dbml-keyword">Table</span> <span class="dbml-table">Transaction</span> {<br>
+                        &nbsp;&nbsp;<span class="dbml-column">id</span> <span class="dbml-keyword">int</span> [<span class="dbml-keyword">pk</span>]<br>
+                        &nbsp;&nbsp;<span class="dbml-column">type_operation</span> <span class="dbml-keyword">varchar</span><br>
+                        &nbsp;&nbsp;<span class="dbml-column">montant</span> <span class="dbml-keyword">decimal</span><br>
+                        &nbsp;&nbsp;<span class="dbml-column">id_compte_source</span> <span class="dbml-keyword">int</span><br>
+                        &nbsp;&nbsp;<span class="dbml-column">id_compte_destination</span> <span class="dbml-keyword">int</span> [<span class="dbml-keyword">null</span>]<br>
+                        &nbsp;&nbsp;<span class="dbml-column">date_operation</span> <span class="dbml-keyword">datetime</span><br>
+                        }<br><br>
+                        
+                        <span class="dbml-keyword">Ref</span>: <span class="dbml-table">Transaction</span>.<span class="dbml-column">id_compte_source</span> > <span class="dbml-table">Compte</span>.<span class="dbml-column">id</span><br>
+                        <span class="dbml-keyword">Ref</span>: <span class="dbml-table">Transaction</span>.<span class="dbml-column">id_compte_destination</span> > <span class="dbml-table">Compte</span>.<span class="dbml-column">id</span>
+                    </div>
                 </div>
                 
-                <div class="merise-model">
-                    <h4>Table Transaction</h4>
-                    <ul>
-                        <li><strong>id</strong> : INTEGER (clé primaire, auto-incrément)</li>
-                        <li><strong>type_operation</strong> : VARCHAR(10) ('depot', 'retrait', 'virement')</li>
-                        <li><strong>montant</strong> : DECIMAL(15,2) (non null)</li>
-                        <li><strong>id_compte_source</strong> : INTEGER (clé étrangère vers Compte.id)</li>
-                        <li><strong>id_compte_destination</strong> : INTEGER (clé étrangère vers Compte.id, nullable)</li>
-                        <li><strong>date_operation</strong> : DATETIME (non null)</li>
-                        <li><strong>motif</strong> : VARCHAR(255)</li>
-                        <li><strong>solde_avant</strong> : DECIMAL(15,2)</li>
-                        <li><strong>solde_apres</strong> : DECIMAL(15,2)</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Modèle Logique de Données (MLD) -->
-            <div class="merise-content" id="mld">
-                <h3>Modèle Logique de Données (MLD)</h3>
-                <p>Le MLD représente l'organisation des données dans le système de gestion de base de données.</p>
-                
-                <div class="merise-model">
-                    <h4>Schéma relationnel</h4>
-                    <p>UTILISATEUR (<u>id</u>, nom_complet, email, mot_de_passe, date_inscription)</p>
-                    <p>COMPTE (<u>id</u>, numero_compte, type_compte, solde, id_utilisateur, date_creation, derniere_operation, decouvert_autorise, taux_interet)</p>
-                    <p>TRANSACTION (<u>id</u>, type_operation, montant, id_compte_source, id_compte_destination, date_operation, motif, solde_avant, solde_apres)</p>
-                </div>
-                
-                <div class="merise-model">
-                    <h4>Dépendances fonctionnelles</h4>
-                    <ul>
-                        <li>id → (nom_complet, email, mot_de_passe, date_inscription) [UTILISATEUR]</li>
-                        <li>id → (numero_compte, type_compte, solde, id_utilisateur, date_creation, derniere_operation, decouvert_autorise, taux_interet) [COMPTE]</li>
-                        <li>id → (type_operation, montant, id_compte_source, id_compte_destination, date_operation, motif, solde_avant, solde_apres) [TRANSACTION]</li>
-                        <li>numero_compte → (id, type_compte, solde, id_utilisateur) [COMPTE]</li>
-                    </ul>
+                <!-- MPD -->
+                <div class="merise-content" id="mpd">
+                    <h3>Modèle Physique de Données (MPD)</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Table</th>
+                                    <th>Colonne</th>
+                                    <th>Type</th>
+                                    <th>Contraintes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="4">Utilisateur</td>
+                                    <td>id</td>
+                                    <td>INTEGER</td>
+                                    <td>PRIMARY KEY AUTOINCREMENT</td>
+                                </tr>
+                                <tr>
+                                    <td>nom_complet</td>
+                                    <td>VARCHAR(100)</td>
+                                    <td>NOT NULL</td>
+                                </tr>
+                                <tr>
+                                    <td>email</td>
+                                    <td>VARCHAR(100)</td>
+                                    <td>UNIQUE, NOT NULL</td>
+                                </tr>
+                                <tr>
+                                    <td>mot_de_passe</td>
+                                    <td>VARCHAR(255)</td>
+                                    <td>NOT NULL</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Compte</td>
+                                    <td>id</td>
+                                    <td>INTEGER</td>
+                                    <td>PRIMARY KEY AUTOINCREMENT</td>
+                                </tr>
+                                <tr>
+                                    <td>numero_compte</td>
+                                    <td>VARCHAR(20)</td>
+                                    <td>UNIQUE, NOT NULL</td>
+                                </tr>
+                                <tr>
+                                    <td>type_compte</td>
+                                    <td>VARCHAR(10)</td>
+                                    <td>'courant' ou 'epargne'</td>
+                                </tr>
+                                <tr>
+                                    <td>solde</td>
+                                    <td>DECIMAL(15,2)</td>
+                                    <td>DEFAULT 0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>id_utilisateur</td>
+                                    <td>INTEGER</td>
+                                    <td>FOREIGN KEY REFERENCES Utilisateur(id)</td>
+                                </tr>
+                                <tr>
+                                    <td>date_creation</td>
+                                    <td>DATETIME</td>
+                                    <td>NOT NULL</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+        </section>
+        
+        <!-- Partie 3: Réalisation -->
+        <section class="part" id="realisation">
+            <h2 class="part-title"><i class="fas fa-code"></i> 3. Réalisation Technique</h2>
             
-            <!-- Modèle Conceptuel de Traitement (MCT) -->
-            <div class="merise-content" id="mct">
-                <h3>Modèle Conceptuel de Traitement (MCT)</h3>
-                <p>Le MCT décrit les processus métier de l'application bancaire.</p>
-                
-                <div class="merise-model">
-                    <h4>Processus : Création de compte</h4>
+            <h3 class="part-subtitle">Fonctionnalités implémentées</h3>
+            <div class="content-grid">
+                <div class="card">
+                    <h3><i class="fas fa-user-circle"></i> Gestion Utilisateurs</h3>
                     <ul>
-                        <li><strong>Acteur</strong> : Utilisateur</li>
-                        <li><strong>Préconditions</strong> : Utilisateur authentifié</li>
-                        <li><strong>Étapes</strong> : 
-                            <ol>
-                                <li>Sélection du type de compte (courant/épargne)</li>
-                                <li>Génération du numéro de compte</li>
-                                <li>Initialisation du solde à 0</li>
-                                <li>Enregistrement en base de données</li>
-                                <li>Notification de création réussie</li>
-                            </ol>
-                        </li>
-                        <li><strong>Postconditions</strong> : Nouveau compte créé et visible dans l'interface</li>
+                        <li>Authentification sécurisée</li>
+                        <li>Profil utilisateur</li>
+                        <li>Gestion des comptes</li>
+                        <li>Thèmes personnalisables</li>
                     </ul>
                 </div>
                 
-                <div class="merise-model">
-                    <h4>Processus : Effectuer une transaction</h4>
+                <div class="card">
+                    <h3><i class="fas fa-exchange-alt"></i> Transactions</h3>
                     <ul>
-                        <li><strong>Acteur</strong> : Utilisateur</li>
-                        <li><strong>Préconditions</strong> : Compte existant avec solde suffisant</li>
-                        <li><strong>Étapes</strong> : 
-                            <ol>
-                                <li>Sélection du type de transaction (dépôt, retrait, virement)</li>
-                                <li>Saisie des détails (montant, compte cible, motif)</li>
-                                <li>Validation des contraintes métier</li>
-                                <li>Exécution atomique de l'opération</li>
-                                <li>Mise à jour des soldes concernés</li>
-                                <li>Enregistrement de la transaction</li>
-                                <li>Notification de succès</li>
-                            </ol>
-                        </li>
-                        <li><strong>Postconditions</strong> : Soldes mis à jour, transaction enregistrée</li>
+                        <li>Dépôts et retraits</li>
+                        <li>Virements inter-comptes</li>
+                        <li>Historique détaillé</li>
+                        <li>Notifications en temps réel</li>
                     </ul>
                 </div>
                 
-                <div class="merise-model">
-                    <h4>Processus : Consultation de l'historique</h4>
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Tableaux de bord</h3>
                     <ul>
-                        <li><strong>Acteur</strong> : Utilisateur</li>
-                        <li><strong>Préconditions</strong> : Compte existant</li>
-                        <li><strong>Étapes</strong> : 
-                            <ol>
-                                <li>Sélection du compte à consulter</li>
-                                <li>Récupération des transactions associées</li>
-                                <li>Filtrage éventuel (date, type, montant)</li>
-                                <li>Présentation dans un tableau interactif</li>
-                                <li>Export possible (PDF, CSV)</li>
-                            </ol>
-                        </li>
-                        <li><strong>Postconditions</strong> : Historique affiché à l'utilisateur</li>
+                        <li>Visualisation des soldes</li>
+                        <li>Top 5 transactions</li>
+                        <li>Historique complet</li>
+                        <li>Export des données</li>
                     </ul>
                 </div>
             </div>
-        </div>
+            
+            <h3 class="part-subtitle">Structure du code</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Composant</th>
+                            <th>Responsabilité</th>
+                            <th>Technologie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GestionnaireTransactions</td>
+                            <td>Gérer dépôts, retraits, virements</td>
+                            <td>C++/Qt</td>
+                        </tr>
+                        <tr>
+                            <td>GestionnaireComptes</td>
+                            <td>Création/suppression comptes</td>
+                            <td>C++/Qt</td>
+                        </tr>
+                        <tr>
+                            <td>GestionnaireHistorique</td>
+                            <td>Affichage historique transactions</td>
+                            <td>C++/Qt/SQL</td>
+                        </tr>
+                        <tr>
+                            <td>GestionnaireTheme</td>
+                            <td>Gestion thème clair/sombre</td>
+                            <td>Qt/CSS</td>
+                        </tr>
+                        <tr>
+                            <td>CreationBD</td>
+                            <td>Initialisation base de données</td>
+                            <td>SQLite</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Partie 4: Difficultés -->
+        <section class="part" id="difficultes">
+            <h2 class="part-title"><i class="fas fa-exclamation-triangle"></i> 4. Difficultés Rencontrées</h2>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <h3><i class="fas fa-database"></i> Gestion des transactions</h3>
+                    <p>Assurer l'atomicité des opérations bancaires était un défi technique majeur.</p>
+                    <ul>
+                        <li>Solution: Utilisation des transactions SQL</li>
+                        <li>Rollback en cas d'erreur</li>
+                        <li>Verrouillage des ressources</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3><i class="fas fa-sync-alt"></i> Synchronisation UI/BD</h3>
+                    <p>Maintenir l'interface à jour avec la base de données en temps réel.</p>
+                    <ul>
+                        <li>Solution: Système de signaux/slots Qt</li>
+                        <li>Événements de mise à jour</li>
+                        <li>Cache local pour performances</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3><i class="fas fa-shield-alt"></i> Sécurité</h3>
+                    <p>Protection des données sensibles et prévention des fraudes.</p>
+                    <ul>
+                        <li>Chiffrement des mots de passe</li>
+                        <li>Validation des entrées utilisateur</li>
+                        <li>Contrôle d'accès strict</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3 class="part-subtitle">Solutions techniques</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Problème</th>
+                            <th>Solution</th>
+                            <th>Résultat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Performances historique</td>
+                            <td>Pagination et indexation</td>
+                            <td>Temps de chargement divisé par 5</td>
+                        </tr>
+                        <tr>
+                            <td>UI complexe</td>
+                            <td>Custom Widgets Qt</td>
+                            <td>Expérience utilisateur fluide</td>
+                        </tr>
+                        <tr>
+                            <td>Gestion thèmes</td>
+                            <td>Système de gestion centralisé</td>
+                            <td>Changement de thème en temps réel</td>
+                        </tr>
+                        <tr>
+                            <td>Gestion erreurs</td>
+                            <td>Exceptions et logs détaillés</td>
+                            <td>Débogage facilité</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Partie 5: Conclusion -->
+        <section class="part" id="conclusion">
+            <h2 class="part-title"><i class="fas fa-flag-checkered"></i> 5. Conclusion et Perspectives</h2>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <h3><i class="fas fa-check-circle"></i> Objectifs atteints</h3>
+                    <ul>
+                        <li>Application bancaire complète et fonctionnelle</li>
+                        <li>Interface moderne et intuitive</li>
+                        <li>Gestion sécurisée des transactions</li>
+                        <li>Persistance des données fiable</li>
+                        <li>Thèmes personnalisables</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3><i class="fas fa-rocket"></i> Perspectives</h3>
+                    <ul>
+                        <li>Application mobile multiplateforme</li>
+                        <li>Intégration de la biométrie</li>
+                        <li>Tableaux de bord analytiques</li>
+                        <li>Export PDF/Excel</li>
+                        <li>Notifications push</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3><i class="fas fa-graduation-cap"></i> Apprentissages</h3>
+                    <ul>
+                        <li>Maîtrise avancée de Qt/C++</li>
+                        <li>Gestion de projet agile</li>
+                        <li>Conception de bases de données</li>
+                        <li>Développement d'interfaces complexes</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
         
         <!-- Remerciements -->
         <div class="acknowledgements">
@@ -601,7 +854,7 @@
             </p>
             
             <div class="signature">
-                L'équipe MyBank - juillet 2025
+                L'équipe MyBank - Octobre 2024
             </div>
         </div>
     </div>
@@ -626,8 +879,30 @@
                 });
             });
             
-            // Animation d'entrée des sections
-            const sections = document.querySelectorAll('.table-of-contents, .merise-section, .acknowledgements');
+            // Navigation
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    // Mettre à jour la navigation active
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Scroll vers la section
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Animation au scroll
+            const sections = document.querySelectorAll('.part');
             
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {

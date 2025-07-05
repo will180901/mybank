@@ -55,6 +55,8 @@ private slots:
     void on_btn_aide_et_supports_barre_latterale_clicked();  // Nouveau slot
     void appliquerTheme(bool themeSombre);
 
+    void on_btn_notification_clicked();
+
 signals:
     void demandeDeconnexion();
     void fenetreDetruite();
