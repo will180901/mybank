@@ -15,6 +15,7 @@
 #include <QApplication>
 #include <QScreen>
 #include <QGuiApplication>
+#include <functional>
 
 class WidgetNotificationModerne : public QWidget
 {
@@ -28,7 +29,8 @@ public:
         Remarque,
         Preventif,
         Avertissement,
-        Erreur
+        Erreur,
+        Critique
     };
 
     explicit WidgetNotificationModerne(QWidget *parent = nullptr);
@@ -38,6 +40,10 @@ public:
     void afficherNotification(const QString &titre, const QString &message, TypeNotification type);
     void afficherNotification(const QString &message, TypeNotification type);
 
+    // Renommé pour éviter le conflit
+    void afficherConfirmationCritiqueImpl(const QString &titre, const QString &message,
+                                          std::function<void()> callbackConfirmation);
+
     // Méthodes statiques pour faciliter l'utilisation
     static void afficherInformation(const QString &titre, const QString &message, QWidget *parent = nullptr);
     static void afficherConseil(const QString &titre, const QString &message, QWidget *parent = nullptr);
@@ -46,6 +52,11 @@ public:
     static void afficherPreventif(const QString &titre, const QString &message, QWidget *parent = nullptr);
     static void afficherAvertissement(const QString &titre, const QString &message, QWidget *parent = nullptr);
     static void afficherErreur(const QString &titre, const QString &message, QWidget *parent = nullptr);
+
+    // Méthode statique pour les confirmations critiques
+    static void afficherConfirmationCritique(const QString &titre, const QString &message,
+                                             std::function<void()> callbackConfirmation,
+                                             QWidget *parent = nullptr);
 
     // Configuration
     void configurerDureeAffichage(int millisecondes);
@@ -60,6 +71,8 @@ private slots:
     void fermerNotification();
     void fermerAutomatiquement();
     void animationTerminee();
+    void onConfirmerClicked();
+    void onAnnulerClicked();
 
 private:
     void configurerInterface();
@@ -76,10 +89,16 @@ private:
 
     // Composants UI
     QHBoxLayout *layoutPrincipal;
+    QVBoxLayout *layoutVertical;
     QLabel *labelIcone;
     QLabel *labelTitre;
     QLabel *labelMessage;
     QPushButton *boutonFermer;
+
+    QWidget *widgetActions;
+    QHBoxLayout *layoutActions;
+    QPushButton *boutonConfirmer;
+    QPushButton *boutonAnnuler;
 
     // Animations
     QPropertyAnimation *animationEntree;
@@ -101,6 +120,9 @@ private:
 
     // Empilement
     static int decalageY;
+
+    // Callback pour les confirmations critiques
+    std::function<void()> callbackConfirmation;
 };
 
 #endif // WIDGETNOTIFICATIONMODERNE_H

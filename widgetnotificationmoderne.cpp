@@ -6,17 +6,22 @@
 #include <QPainterPath>
 #include <QGraphicsBlurEffect>
 #include <QGuiApplication>
+#include <QVBoxLayout>
 
-// Initialisation de la variable statique
 int WidgetNotificationModerne::decalageY = 0;
 
 WidgetNotificationModerne::WidgetNotificationModerne(QWidget *parent)
     : QWidget(parent)
     , layoutPrincipal(nullptr)
+    , layoutVertical(nullptr)
     , labelIcone(nullptr)
     , labelTitre(nullptr)
     , labelMessage(nullptr)
     , boutonFermer(nullptr)
+    , widgetActions(nullptr)
+    , layoutActions(nullptr)
+    , boutonConfirmer(nullptr)
+    , boutonAnnuler(nullptr)
     , animationEntree(nullptr)
     , animationSortie(nullptr)
     , animationOpacite(nullptr)
@@ -24,13 +29,13 @@ WidgetNotificationModerne::WidgetNotificationModerne(QWidget *parent)
     , typeActuel(Information)
     , timerFermeture(nullptr)
     , fermetureAutomatiqueActivee(true)
-    , dureeAffichage(5000) // 5 secondes par défaut
+    , dureeAffichage(5000)
     , animationEnCours(false)
+    , callbackConfirmation(nullptr)
 {
     configurerInterface();
     configurerAnimations();
 
-    // Configuration de base du widget
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -38,18 +43,15 @@ WidgetNotificationModerne::WidgetNotificationModerne(QWidget *parent)
     setMaximumWidth(600);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-    // Timer pour fermeture automatique
     timerFermeture = new QTimer(this);
     timerFermeture->setSingleShot(true);
     connect(timerFermeture, &QTimer::timeout, this, &WidgetNotificationModerne::fermerAutomatiquement);
 
-    // Installer un filtre d'événements pour capturer les clics
     installEventFilter(this);
 }
 
 WidgetNotificationModerne::~WidgetNotificationModerne()
 {
-    // Arrêter les animations pour éviter les callbacks sur objet détruit
     if (animationEntree) {
         animationEntree->stop();
         animationEntree->deleteLater();
@@ -67,32 +69,30 @@ WidgetNotificationModerne::~WidgetNotificationModerne()
         timerFermeture->deleteLater();
     }
 
-    // Réinitialiser le décalage quand la dernière notification est fermée
     decalageY = 0;
 }
 
 void WidgetNotificationModerne::configurerInterface()
 {
-    // Layout principal
-    layoutPrincipal = new QHBoxLayout(this);
+    layoutVertical = new QVBoxLayout(this);
+    layoutVertical->setContentsMargins(0, 0, 0, 0);
+    layoutVertical->setSpacing(0);
+
+    layoutPrincipal = new QHBoxLayout();
     layoutPrincipal->setContentsMargins(15, 10, 15, 10);
     layoutPrincipal->setSpacing(12);
 
-    // Label pour l'icône
     labelIcone = new QLabel(this);
     labelIcone->setFixedSize(24, 24);
     labelIcone->setAlignment(Qt::AlignCenter);
 
-    // Label pour le titre
     labelTitre = new QLabel(this);
     labelTitre->setWordWrap(true);
 
-    // Label pour le message
     labelMessage = new QLabel(this);
     labelMessage->setWordWrap(true);
     labelMessage->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
-    // Bouton fermer
     boutonFermer = new QPushButton("✕", this);
     boutonFermer->setFixedSize(24, 24);
     boutonFermer->setStyleSheet(
@@ -111,41 +111,85 @@ void WidgetNotificationModerne::configurerInterface()
         "}"
         );
 
-    // Ajouter les composants au layout
     layoutPrincipal->addWidget(labelIcone);
     layoutPrincipal->addWidget(labelTitre);
     layoutPrincipal->addWidget(labelMessage);
     layoutPrincipal->addStretch();
     layoutPrincipal->addWidget(boutonFermer);
 
-    // Connecter le bouton fermer
+    widgetActions = new QWidget(this);
+    layoutActions = new QHBoxLayout(widgetActions);
+    layoutActions->setContentsMargins(15, 5, 15, 10);
+    layoutActions->setSpacing(10);
+    widgetActions->setVisible(false);
+
+    boutonAnnuler = new QPushButton("Annuler", widgetActions);
+    boutonAnnuler->setFixedHeight(30);
+    boutonAnnuler->setStyleSheet(
+        "QPushButton {"
+        "    background-color: #e0e0e0;"
+        "    color: #333333;"
+        "    border-radius: 5px;"
+        "    padding: 5px 15px;"
+        "    font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #d0d0d0;"
+        "}"
+        "QPushButton:pressed {"
+        "    background-color: #c0c0c0;"
+        "}"
+        );
+
+    boutonConfirmer = new QPushButton("Confirmer", widgetActions);
+    boutonConfirmer->setFixedHeight(30);
+    boutonConfirmer->setStyleSheet(
+        "QPushButton {"
+        "    background-color: #3498db;"
+        "    color: white;"
+        "    border-radius: 5px;"
+        "    padding: 5px 15px;"
+        "    font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #2980b9;"
+        "}"
+        "QPushButton:pressed {"
+        "    background-color: #2471a3;"
+        "}"
+        );
+
+    layoutActions->addStretch();
+    layoutActions->addWidget(boutonAnnuler);
+    layoutActions->addWidget(boutonConfirmer);
+
+    layoutVertical->addLayout(layoutPrincipal);
+    layoutVertical->addWidget(widgetActions);
+
     connect(boutonFermer, &QPushButton::clicked, this, &WidgetNotificationModerne::fermerNotification);
+    connect(boutonAnnuler, &QPushButton::clicked, this, &WidgetNotificationModerne::onAnnulerClicked);
+    connect(boutonConfirmer, &QPushButton::clicked, this, &WidgetNotificationModerne::onConfirmerClicked);
 }
 
 void WidgetNotificationModerne::configurerAnimations()
 {
-    // Effet d'opacité
     effetOpacite = new QGraphicsOpacityEffect(this);
     setGraphicsEffect(effetOpacite);
 
-    // Animation d'entrée (de droite à gauche)
     animationEntree = new QPropertyAnimation(this, "pos");
     animationEntree->setDuration(600);
     animationEntree->setEasingCurve(QEasingCurve::OutCubic);
 
-    // Animation de sortie
     animationSortie = new QPropertyAnimation(this, "pos");
     animationSortie->setDuration(400);
     animationSortie->setEasingCurve(QEasingCurve::InCubic);
 
-    // Animation d'opacité
     animationOpacite = new QPropertyAnimation(effetOpacite, "opacity");
     animationOpacite->setDuration(300);
 
-    // Connecter les animations
     connect(animationEntree, &QPropertyAnimation::finished, this, &WidgetNotificationModerne::animationTerminee);
     connect(animationSortie, &QPropertyAnimation::finished, this, [this]() {
-        decalageY -= height() + 10; // Réduire le décalage
+        decalageY -= height() + 10;
         close();
     });
 }
@@ -156,7 +200,6 @@ QScreen* WidgetNotificationModerne::obtenirEcranActuel()
         return parentWidget()->screen();
     }
 
-    // Obtenir l'écran sous le curseur
     QPoint cursorPos = QCursor::pos();
     for (QScreen *screen : QGuiApplication::screens()) {
         if (screen->geometry().contains(cursorPos)) {
@@ -164,7 +207,6 @@ QScreen* WidgetNotificationModerne::obtenirEcranActuel()
         }
     }
 
-    // Fallback à l'écran principal
     return QApplication::primaryScreen();
 }
 
@@ -172,16 +214,13 @@ void WidgetNotificationModerne::afficherNotification(const QString &titre, const
 {
     typeActuel = type;
 
-    // Arrêter le timer existant
     if (timerFermeture && timerFermeture->isActive()) {
         timerFermeture->stop();
     }
 
-    // Configurer le contenu
     labelTitre->setText(titre.isEmpty() ? obtenirTitreParDefaut(type) : titre);
     labelMessage->setText(message);
 
-    // Afficher/masquer le titre selon s'il y a un message
     if (message.isEmpty()) {
         labelTitre->hide();
         labelMessage->setText(titre);
@@ -189,24 +228,34 @@ void WidgetNotificationModerne::afficherNotification(const QString &titre, const
         labelTitre->show();
     }
 
-    // Configurer le style selon le type
+    widgetActions->setVisible(false);
     configurerStyle(type);
-
-    // Ajuster la taille au contenu
     adjustSize();
-
-    // Positionner le widget
     positionnerWidget();
-
-    // Afficher et animer
     show();
-    raise();  // S'assurer qu'elle est au premier plan
+    raise();
     demarrerAnimationEntree();
 
-    // Démarrer le timer de fermeture automatique si activé
-    if (fermetureAutomatiqueActivee) {
+    if (fermetureAutomatiqueActivee && type != Critique) {
         timerFermeture->start(dureeAffichage);
     }
+}
+
+// Renommé pour éviter le conflit
+void WidgetNotificationModerne::afficherConfirmationCritiqueImpl(const QString &titre, const QString &message,
+                                                                 std::function<void()> callbackConfirmation)
+{
+    this->callbackConfirmation = callbackConfirmation;
+    afficherNotification(titre, message, Critique);
+    widgetActions->setVisible(true);
+    fermetureAutomatiqueActivee = false;
+
+    if (timerFermeture && timerFermeture->isActive()) {
+        timerFermeture->stop();
+    }
+
+    adjustSize();
+    positionnerWidget();
 }
 
 void WidgetNotificationModerne::afficherNotification(const QString &message, TypeNotification type)
@@ -220,7 +269,6 @@ void WidgetNotificationModerne::configurerStyle(TypeNotification type)
     couleurTexte = obtenirCouleurTexte(type);
     iconeUnicode = obtenirIconeUnicode(type);
 
-    // Appliquer les couleurs dynamiquement
     QString styleBouton = QString(
                               "QPushButton {"
                               "    background-color: rgba(255, 255, 255, 0.2);"
@@ -242,8 +290,6 @@ void WidgetNotificationModerne::configurerStyle(TypeNotification type)
     labelMessage->setStyleSheet(QString("QLabel { color: %1; font-size: 12px; }").arg(couleurTexte));
     boutonFermer->setStyleSheet(styleBouton);
     labelIcone->setText(iconeUnicode);
-
-    // Forcer une mise à jour du style
     update();
 }
 
@@ -251,51 +297,36 @@ void WidgetNotificationModerne::positionnerWidget()
 {
     QScreen *screen = obtenirEcranActuel();
     if (!screen) {
-        // Fallback : utiliser l'écran principal
         screen = QApplication::primaryScreen();
         if (!screen) {
-            // Fallback ultime : utiliser le premier écran
             QList<QScreen*> screens = QApplication::screens();
             if (!screens.isEmpty()) {
                 screen = screens.first();
             } else {
-                return; // Aucun écran disponible
+                return;
             }
         }
     }
 
     QRect screenGeometry = screen->availableGeometry();
-
-    // Position finale : bas à droite
-    int x = screenGeometry.right() - width() - 20;  // 20px marge droite
-    int y = screenGeometry.bottom() - height() - 20 - decalageY; // 20px marge bas + décalage
-
-    // Position de départ (hors écran à droite)
+    int x = screenGeometry.right() - width() - 20;
+    int y = screenGeometry.bottom() - height() - 20 - decalageY;
     int startX = screenGeometry.right() + width();
 
-    // Définir les positions pour l'animation
     animationEntree->setStartValue(QPoint(startX, y));
     animationEntree->setEndValue(QPoint(x, y));
     animationSortie->setStartValue(QPoint(x, y));
     animationSortie->setEndValue(QPoint(startX, y));
-
-    // Positionner initialement hors écran
     move(startX, y);
-
-    // Augmenter le décalage pour la prochaine notification
     decalageY += height() + 10;
 }
 
 void WidgetNotificationModerne::demarrerAnimationEntree()
 {
     animationEnCours = true;
-
-    // Animation d'opacité
     effetOpacite->setOpacity(0.0);
     animationOpacite->setStartValue(0.0);
     animationOpacite->setEndValue(1.0);
-
-    // Démarrer les animations
     animationEntree->start();
     animationOpacite->start();
 }
@@ -303,17 +334,11 @@ void WidgetNotificationModerne::demarrerAnimationEntree()
 void WidgetNotificationModerne::demarrerAnimationSortie()
 {
     animationEnCours = true;
-
-    // Arrêter le timer de fermeture
     if (timerFermeture && timerFermeture->isActive()) {
         timerFermeture->stop();
     }
-
-    // Animation d'opacité pour la sortie
     animationOpacite->setStartValue(1.0);
     animationOpacite->setEndValue(0.0);
-
-    // Démarrer les animations
     animationSortie->start();
     animationOpacite->start();
 }
@@ -321,22 +346,13 @@ void WidgetNotificationModerne::demarrerAnimationSortie()
 void WidgetNotificationModerne::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
-
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-
-    // Créer un chemin arrondi
     QPainterPath path;
     path.addRoundedRect(rect(), 12, 12);
-
-    // Couleur de fond avec transparence
     QColor bgColor(couleurFond);
-    bgColor.setAlpha(180); // Transparence
-
-    // Dessiner le fond
+    bgColor.setAlpha(180);
     painter.fillPath(path, bgColor);
-
-    // Effet de bordure subtile
     QPen pen(QColor(255, 255, 255, 50));
     pen.setWidth(1);
     painter.setPen(pen);
@@ -362,10 +378,22 @@ void WidgetNotificationModerne::animationTerminee()
     animationEnCours = false;
 }
 
+void WidgetNotificationModerne::onConfirmerClicked()
+{
+    if (callbackConfirmation) {
+        callbackConfirmation();
+    }
+    fermerNotification();
+}
+
+void WidgetNotificationModerne::onAnnulerClicked()
+{
+    fermerNotification();
+}
+
 bool WidgetNotificationModerne::eventFilter(QObject *obj, QEvent *event)
 {
-    // Ne pas capturer les événements du bouton fermer
-    if (obj == boutonFermer) {
+    if (obj == boutonFermer || obj == boutonConfirmer || obj == boutonAnnuler) {
         return QWidget::eventFilter(obj, event);
     }
 
@@ -397,6 +425,7 @@ QString WidgetNotificationModerne::obtenirIconeUnicode(TypeNotification type)
     case Preventif:       return "🛡";
     case Avertissement:   return "⚠";
     case Erreur:          return "❌";
+    case Critique:        return "❗";
     default:              return "ℹ";
     }
 }
@@ -404,21 +433,21 @@ QString WidgetNotificationModerne::obtenirIconeUnicode(TypeNotification type)
 QString WidgetNotificationModerne::obtenirCouleurFond(TypeNotification type)
 {
     switch (type) {
-    case Information:     return "#3498db"; // Bleu
-    case Conseil:         return "#2ecc71"; // Vert
-    case Recommandation:  return "#9b59b6"; // Violet
-    case Remarque:        return "#34495e"; // Gris foncé
-    case Preventif:       return "#f39c12"; // Orange
-    case Avertissement:   return "#e67e22"; // Orange foncé
-    case Erreur:          return "#e74c3c"; // Rouge
+    case Information:     return "#3498db";
+    case Conseil:         return "#2ecc71";
+    case Recommandation:  return "#9b59b6";
+    case Remarque:        return "#34495e";
+    case Preventif:       return "#f39c12";
+    case Avertissement:   return "#e67e22";
+    case Erreur:          return "#e74c3c";
+    case Critique:        return "#d35400";
     default:              return "#3498db";
     }
 }
 
 QString WidgetNotificationModerne::obtenirCouleurTexte(TypeNotification type)
 {
-    Q_UNUSED(type)
-    return "#ffffff"; // Blanc pour tous les types
+    return "#ffffff";
 }
 
 QString WidgetNotificationModerne::obtenirTitreParDefaut(TypeNotification type)
@@ -431,6 +460,7 @@ QString WidgetNotificationModerne::obtenirTitreParDefaut(TypeNotification type)
     case Preventif:       return "Préventif";
     case Avertissement:   return "Avertissement";
     case Erreur:          return "Erreur";
+    case Critique:        return "Confirmation requise";
     default:              return "Notification";
     }
 }
@@ -445,7 +475,7 @@ void WidgetNotificationModerne::configurerFermetureAutomatique(bool activer)
     fermetureAutomatiqueActivee = activer;
 }
 
-// Méthodes statiques pour faciliter l'utilisation
+// Méthodes statiques
 void WidgetNotificationModerne::afficherInformation(const QString &titre, const QString &message, QWidget *parent)
 {
     WidgetNotificationModerne *widget = new WidgetNotificationModerne(parent);
@@ -486,4 +516,12 @@ void WidgetNotificationModerne::afficherErreur(const QString &titre, const QStri
 {
     WidgetNotificationModerne *widget = new WidgetNotificationModerne(parent);
     widget->afficherNotification(titre, message, Erreur);
+}
+
+void WidgetNotificationModerne::afficherConfirmationCritique(const QString &titre, const QString &message,
+                                                             std::function<void()> callbackConfirmation,
+                                                             QWidget *parent)
+{
+    WidgetNotificationModerne *widget = new WidgetNotificationModerne(parent);
+    widget->afficherConfirmationCritiqueImpl(titre, message, callbackConfirmation);
 }
