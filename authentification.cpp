@@ -26,6 +26,9 @@ Authentification::Authentification(QWidget *parent)
 
     initialisationBD();
 
+    connecterSignauxTheme();
+    initialiserTheme();
+
     UtilitairesMotDePasse::configurerBoutonVisibilite(ui->lineEdit_confirme_mot_de_passe_zone_creer_compte);
     UtilitairesMotDePasse::configurerBoutonVisibilite(ui->lineEdit_mot_de_passe_zone_creer_compte);
     UtilitairesMotDePasse::configurerBoutonVisibilite(ui->lineEdit_mot_de_passe_connexion);
@@ -47,6 +50,9 @@ void Authentification::afficherFenetre()
 
     // Remplir automatiquement l'email du premier utilisateur
     remplirEmailPremierUtilisateur();
+
+    // Synchroniser avec le thème global avant d'afficher
+    synchroniserAvecThemeGlobal();
 
     // Réafficher la fenêtre
     show();
@@ -502,4 +508,48 @@ bool Authentification::eventFilter(QObject* obj, QEvent* event)
         }
     }
     return QDialog::eventFilter(obj, event);
+}
+
+
+// Ajouter ces méthodes dans authentification.cpp
+
+void Authentification::connecterSignauxTheme()
+{
+    // Se connecter au gestionnaire de thème global
+    GestionnaireTheme* gestionnaireGlobal = GestionnaireTheme::instance();
+
+    connect(gestionnaireGlobal, &GestionnaireTheme::themeChangeGlobal,
+            this, &Authentification::appliquerTheme);
+}
+
+void Authentification::initialiserTheme()
+{
+    // Appliquer le thème initial basé sur les paramètres sauvegardés
+    GestionnaireTheme* gestionnaireGlobal = GestionnaireTheme::instance();
+    appliquerTheme(gestionnaireGlobal->estThemeSombreActif());
+}
+
+void Authentification::synchroniserAvecThemeGlobal()
+{
+    // Synchroniser avec le thème global quand la fenêtre d'authentification s'affiche
+    GestionnaireTheme* gestionnaireGlobal = GestionnaireTheme::instance();
+    appliquerTheme(gestionnaireGlobal->estThemeSombreActif());
+}
+
+void Authentification::appliquerTheme(bool themeSombre)
+{
+    QString cheminTheme = themeSombre
+                              ? ":/themes_authen/theme_sombre.txt"
+                              : ":/themes_authen/theme_clair.txt";
+
+    QFile fichierTheme(cheminTheme);
+    if (fichierTheme.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&fichierTheme);
+        QString styleSheet = in.readAll();
+        this->setStyleSheet(styleSheet);
+        fichierTheme.close();
+    } else {
+        qWarning() << "Impossible de charger le fichier de thème pour l'authentification:" << cheminTheme;
+        this->setStyleSheet("");
+    }
 }

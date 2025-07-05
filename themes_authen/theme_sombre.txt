@@ -1,0 +1,150 @@
+/*===============================================
+   STYLES GLOBAUX - THÈME SOMBRE PROFESSIONNEL
+   ===============================================*/
+
+* {
+    /*border: 1px solid rgb(0, 0, 0); */
+    color: rgb(229, 231, 235);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/*===============================================
+   CONTENEURS ET PAGES PRINCIPALES
+   ===============================================*/
+
+#Authentification, #widget, #page, #page_2 {
+    background-color: rgb(31, 41, 55);
+    border: none;
+}
+
+/*===============================================
+   MESSAGES D'ERREUR
+   ===============================================*/
+
+#zone_message_erreur_page_creer_compte, #zone_message_erreur_page_se_connecter {
+    font: italic 8pt "Segoe UI";
+    color: rgb(248, 113, 113);
+}
+
+/*===============================================
+   BOUTONS SECONDAIRES
+   ===============================================*/
+
+#btn_se_connecter_zone_creer_compte, #btn_creer_compte_zone_connexion {
+    background-color: rgb(55, 65, 81);
+    border: 1px solid rgb(107, 114, 128);
+    color: rgb(229, 231, 235);
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+#btn_se_connecter_zone_creer_compte:hover, #btn_creer_compte_zone_connexion:hover {
+    background-color: rgb(59, 130, 246);
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(59, 130, 246);
+}
+
+/*===============================================
+   BOUTON MOT DE PASSE OUBLIÉ
+   ===============================================*/
+
+#btn_mot_de_passe_oublier {
+    border: none;
+    background: transparent;
+    color: rgb(59, 130, 246);
+    font: 700 8pt "Segoe UI";
+}
+
+#btn_mot_de_passe_oublier:hover {
+    color: rgb(37, 99, 235);
+}
+
+/*===============================================
+   CARTES DE CONNEXION
+   ===============================================*/
+
+#carte_connexion, #carte_creer_compte {
+    background-color: rgb(55, 65, 81);
+    border-radius: 4px;
+    border: 1px solid rgb(75, 85, 99);
+}
+
+/*===============================================
+   INPUTS DE BASE
+   ===============================================*/
+
+QLineEdit, QTextEdit {
+    background-color: rgb(55, 65, 81);
+    border: 1px solid rgb(107, 114, 128);
+    border-radius: 4px;
+    padding: 6px;
+    color: rgb(229, 231, 235);
+}
+
+QLineEdit:hover, QTextEdit:hover {
+    border: 1px solid rgb(59, 130, 246);
+    background-color: rgb(31, 41, 55);
+}
+
+QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QDoubleSpinBox:focus {
+    border: 1px solid rgb(59, 130, 246);
+    outline: none;
+}
+
+/*===============================================
+   BOUTONS STANDARDS
+   ===============================================*/
+
+QPushButton {
+    background-color: rgb(59, 130, 246);
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    min-height: 18px;
+}
+
+QPushButton:hover {
+    background-color: rgb(37, 99, 235);
+}
+
+QPushButton:pressed {
+    background-color: rgb(29, 78, 216);
+}
+
+QToolButton {
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+/*===============================================
+   SÉPARATEURS
+   ===============================================*/
+
+Line {
+    background-color: rgb(75, 85, 99);
+    border-radius: 1px;
+    border: 1px solid rgb(75, 85, 99);
+    width: 1px;
+}
+
+
+QGroupBox {
+    border: none;
+    border-radius: 4px;
+    margin-top: 6px;
+    padding: 8px 6px 6px 6px;
+    background: rgba(31, 41, 55, 0.8);
+    font-weight: 500;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 8px;
+    padding: 0 6px;
+    color: rgb(209, 213, 219);
+    font-weight: 600;
+    font-size: 13px;
+}

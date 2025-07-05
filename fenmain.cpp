@@ -2,6 +2,7 @@
 #include "ui_fenmain.h"
 #include "utilitairesmotdepasse.h"
 #include "highlightdelegate.h"
+#include "widgetnotificationmoderne.h"
 
 #include <QMessageBox>
 #include <QSqlDatabase>
@@ -13,7 +14,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QStyle>
-#include <QCloseEvent>  // Ajout pour closeEvent
+#include <QCloseEvent>
 
 fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_id)
     : QMainWindow(parent),
@@ -21,7 +22,7 @@ fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_i
     m_utilisateur_id(utilisateur_id),
     m_soldeVisibleCompteCourant(true),
     m_soldeVisibleCompteEpargne(true),
-    m_soldeAnimation(new AnimationSolde(this)),  // Parenté à this (gestion auto)
+    m_soldeAnimation(new AnimationSolde(this)),
     m_banque("MyBank", m_BD),
     m_creationBD(m_BD)
 {
@@ -32,9 +33,22 @@ fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_i
     m_gestionnaireComptes = new GestionnaireComptes(m_banque, m_creationBD, m_utilisateur_id, this);
     m_gestionnaireTransactions = new GestionnaireTransactions(m_banque, m_creationBD, this);
     m_gestionnaireHistorique = new GestionnaireHistorique(m_creationBD, m_utilisateur_id, this);
-    m_gestionnaireTheme = new GestionnaireTheme(ui->zone_bouton_bascule, this);
+   // m_gestionnaireTheme = new GestionnaireTheme(ui->zone_bouton_bascule, this);
     m_gestionnaireInterface = new GestionnaireInterface(this);
     m_gestionnaireUtilisateur = new GestionnaireUtilisateur(m_creationBD, m_utilisateur_id, this);
+
+    m_gestionnaireTheme = new GestionnaireTheme(ui->zone_bouton_bascule, this);
+
+    // Connecter au gestionnaire global pour synchroniser
+    GestionnaireTheme* gestionnaireGlobal = GestionnaireTheme::instance();
+    connect(gestionnaireGlobal, &GestionnaireTheme::themeChangeGlobal,
+            this, &fenMain::appliquerTheme);
+
+    // S'assurer que le thème est synchronisé
+    connect(m_gestionnaireTheme, &GestionnaireTheme::themeChange,
+            [](bool themeSombre) {
+                GestionnaireTheme::instance()->forcerTheme(themeSombre);
+            });
 
     // Initialiser le thème
     m_gestionnaireTheme->initialiserThemeCouleur(this);
@@ -142,18 +156,13 @@ void fenMain::appliquerTheme(bool themeSombre)
 
 fenMain::~fenMain()
 {
-    // Supprimer l'UI
     delete ui;
-
-    // Ne pas supprimer m_soldeAnimation (géré par parent)
-    // Suppression des gestionnaires (gérés par parent)
-    // Émettre le signal de destruction
     emit fenetreDetruite();
 }
 
 void fenMain::closeEvent(QCloseEvent *event)
 {
-    sauvegarderDonnees();  // Sauvegarde avant fermeture
+    sauvegarderDonnees();
     event->accept();
 }
 
@@ -270,25 +279,27 @@ void fenMain::on_btn_valider_transaction_clicked()
         QString typeOperation = ui->comboBox_type_operation_onglet_depot_retrait->currentText();
 
         if (numeroCompte.isEmpty()) {
-            QMessageBox::warning(this, "Erreur", "Veuillez saisir un numéro de compte!");
+            WidgetNotificationModerne::afficherErreur("Erreur", "Veuillez saisir un numéro de compte!", this);
             return;
         }
 
         if (montant <= 0) {
-            QMessageBox::warning(this, "Erreur", "Veuillez saisir un montant valide!");
+            WidgetNotificationModerne::afficherErreur("Erreur", "Veuillez saisir un montant valide!", this);
             return;
         }
 
         CompteBancaire* compte = m_banque.trouverCompte(numeroCompte);
         if (!compte) {
-            QMessageBox::warning(this, "Erreur", "Compte introuvable!");
+            WidgetNotificationModerne::afficherErreur("Erreur", "Compte introuvable!", this);
             return;
         }
 
         if (typeOperation == "Dépôt") {
             m_gestionnaireTransactions->effectuerDepot(compte, montant, motif);
+            WidgetNotificationModerne::afficherInformation("Succès", "Dépôt effectué avec succès", this);
         } else if (typeOperation == "Retrait") {
             m_gestionnaireTransactions->effectuerRetrait(compte, montant, motif);
+            WidgetNotificationModerne::afficherInformation("Succès", "Retrait effectué avec succès", this);
         }
     } else if (indexOnglet == 1) { // Onglet virement
         QString compteSource = ui->sai_numero_compte_source_onglet_virement->text().trimmed();
@@ -297,21 +308,22 @@ void fenMain::on_btn_valider_transaction_clicked()
         QString motif = ui->textEdit_motif_onglet_virement->toPlainText().trimmed();
 
         if (compteSource.isEmpty()) {
-            QMessageBox::warning(this, "Erreur", "Veuillez saisir le compte source!");
+            WidgetNotificationModerne::afficherErreur("Erreur", "Veuillez saisir le compte source!", this);
             return;
         }
 
         if (compteDest.isEmpty()) {
-            QMessageBox::warning(this, "Erreur", "Veuillez saisir le compte bénéficiaire!");
+            WidgetNotificationModerne::afficherErreur("Erreur", "Veuillez saisir le compte bénéficiaire!", this);
             return;
         }
 
         if (montant <= 0) {
-            QMessageBox::warning(this, "Erreur", "Veuillez saisir un montant valide!");
+            WidgetNotificationModerne::afficherErreur("Erreur", "Veuillez saisir un montant valide!", this);
             return;
         }
 
         m_gestionnaireTransactions->effectuerVirement(compteSource, compteDest, montant, motif);
+        WidgetNotificationModerne::afficherInformation("Succès", "Virement effectué avec succès", this);
     }
 
     // Réinitialiser les champs
@@ -326,16 +338,28 @@ void fenMain::on_btn_valider_transaction_clicked()
 
 void fenMain::on_btn_supprimer_compte_courant_clicked()
 {
-    if (QMessageBox::question(this, "Confirmation", "Voulez-vous vraiment supprimer votre compte courant?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
-        m_gestionnaireComptes->supprimerCompteCourant();
-    }
+    WidgetNotificationModerne::afficherConfirmationCritique(
+        "Confirmation",
+        "Voulez-vous vraiment supprimer votre compte courant?",
+        [this]() {
+            m_gestionnaireComptes->supprimerCompteCourant();
+            WidgetNotificationModerne::afficherInformation("Succès", "Compte courant supprimé", this);
+        },
+        this
+        );
 }
 
 void fenMain::on_btn_supprimer_compte_epargne_clicked()
 {
-    if (QMessageBox::question(this, "Confirmation", "Voulez-vous vraiment supprimer votre compte épargne?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
-        m_gestionnaireComptes->supprimerCompteEpargne();
-    }
+    WidgetNotificationModerne::afficherConfirmationCritique(
+        "Confirmation",
+        "Voulez-vous vraiment supprimer votre compte épargne?",
+        [this]() {
+            m_gestionnaireComptes->supprimerCompteEpargne();
+            WidgetNotificationModerne::afficherInformation("Succès", "Compte épargne supprimé", this);
+        },
+        this
+        );
 }
 
 void fenMain::on_btn_masquer_solde_compte_courant_clicked()
@@ -386,31 +410,26 @@ void fenMain::on_btn_parametres_barre_latterale_clicked()
     mettreAJourStyleBoutonsLateraux();
 }
 
-void fenMain::on_btn_consulter_compte_epargne_clicked()
-{
-    ui->mes_pages->setCurrentWidget(ui->page_historique);
-    mettreAJourStyleBoutonsLateraux();
-}
 
-void fenMain::on_btn_consulter_compte_courant_clicked()
-{
-    ui->mes_pages->setCurrentWidget(ui->page_historique);
-    mettreAJourStyleBoutonsLateraux();
-}
 
-void fenMain::on_btn_effectuer_transaction_compte_courant_clicked()
+void fenMain::on_btn_effectuer_transaction_compte_clicked()
 {
+
     ui->mes_pages->setCurrentWidget(ui->page_transaction);
     ui->mes_onglets_page_transaction->setCurrentWidget(ui->onglet_depot_retrait);
     mettreAJourStyleBoutonsLateraux();
+
 }
 
-void fenMain::on_btn_effectuer_transaction_compte_epargne_clicked()
+
+void fenMain::on_btn_consulter_compte_clicked()
 {
-    ui->mes_pages->setCurrentWidget(ui->page_transaction);
-    ui->mes_onglets_page_transaction->setCurrentWidget(ui->onglet_depot_retrait);
+
+    ui->mes_pages->setCurrentWidget(ui->page_historique);
     mettreAJourStyleBoutonsLateraux();
+
 }
+
 
 void fenMain::on_btn_voir_liste_complete_transaction_clicked()
 {
@@ -421,11 +440,13 @@ void fenMain::on_btn_voir_liste_complete_transaction_clicked()
 void fenMain::on_btn_ajouter_compte_courant_clicked()
 {
     m_gestionnaireComptes->creerCompteCourant();
+    WidgetNotificationModerne::afficherInformation("Succès", "Compte courant créé", this);
 }
 
 void fenMain::on_btn_ajouter_compte_epargne_clicked()
 {
     m_gestionnaireComptes->creerCompteEpargne();
+    WidgetNotificationModerne::afficherInformation("Succès", "Compte épargne créé", this);
 }
 
 void fenMain::on_btn_modifier_info_tutilaire_parametre_clicked()
@@ -436,19 +457,19 @@ void fenMain::on_btn_modifier_info_tutilaire_parametre_clicked()
     QString confirmationMotDePasse = ui->lineEdit_mot_de_passe_confirmation_parametre->text();
 
     m_gestionnaireUtilisateur->mettreAJourInformationsUtilisateur(
-        nouveauNom, nouvelEmail, nouveauMotDePasse, confirmationMotDePasse, this
-        );
+        nouveauNom, nouvelEmail, nouveauMotDePasse, confirmationMotDePasse, this);
+    WidgetNotificationModerne::afficherInformation("Succès", "Informations mises à jour", this);
 }
 
 void fenMain::on_btn_deconnexion_barre_latterale_clicked()
 {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Déconnexion",
-                                  "Êtes-vous sûr de vouloir vous déconnecter ?",
-                                  QMessageBox::Yes | QMessageBox::No);
-
-    if (reply == QMessageBox::Yes) {
-        sauvegarderDonnees();  // Utilisation de la méthode centralisée
-        emit demandeDeconnexion();
-    }
+    WidgetNotificationModerne::afficherConfirmationCritique(
+        "Déconnexion",
+        "Êtes-vous sûr de vouloir vous déconnecter ?",
+        [this]() {
+            sauvegarderDonnees();
+            emit demandeDeconnexion();
+        },
+        this
+        );
 }

@@ -22,6 +22,12 @@
     font-family: 'Segoe UI', Arial, sans-serif;
 }
 
+#Authentification,#widget,#page,#page_2{
+
+		 background-color: rgb(248, 249, 250);
+        border: none;
+
+}
 
 #zone_message_erreur_page_creer_compte,#zone_message_erreur_page_se_connecter{
 
@@ -69,7 +75,7 @@
 
 #btn_mot_de_passe_oublier:hover{
 
-		color:rgba(41, 98, 255,0.1);
+		color:rgb(41, 98, 255,0.2);
 
 }
 
@@ -79,17 +85,7 @@
    CONTENEURS ET PAGES PRINCIPALES
    =============================================== */
 
-#scrollAreaWidgetContents,#scrollAreaWidgetContents_2, 
-#scrollArea,#scrollArea_2, #Authentification , #page , #page_2{
-    background-color: rgb(245, 247, 250);
-    border: none;
-}
 
-
-
-/* ===============================================
-   CARTES ET CONTENEURS
-   =============================================== */
 
 #carte_connexion , #carte_creer_compte {
     background-color: rgb(255, 255, 255);
@@ -97,11 +93,7 @@
     border: 1px solid rgb(214, 221, 235);
 }
 
-#carte_resume_liste {
-    background-color: rgb(255, 255, 255);
-    border-radius: 4px;
-    border: 1px solid rgb(214, 221, 235);
-}
+
 
 /* ===============================================
    INPUTS DE BASE
@@ -167,261 +159,12 @@ Line {
     width: 1px;
 }
 
-/* ===============================================
-   QCOMBOBOX - AMÉLIORÉ
-   =============================================== */
-
-QComboBox {
-    background-color: rgb(245, 247, 250);
-    border: 1px solid #D6DDEB;
-    border-radius: 4px;
-    padding: 6px 24px 6px 8px;
-    color: #4A4A4A;
-    font-size: 13px;
-    min-height: 18px;
-    selection-background-color: #2962FF;
-}
-
-QComboBox:hover {
-    border-color: #2962FF;
-    background-color: rgb(250, 251, 253);
-}
-
-QComboBox:focus {
-    border: 1px solid #2962FF;
-    outline: none;
-}
-
-QComboBox:pressed {
-    background-color: rgb(240, 242, 247);
-}
-
-/* Bouton déroulant - SANS BORDURE */
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    border: none; /* Bordure supprimée */
-    background-color: transparent;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-
-QComboBox::drop-down:hover {
-    background-color: rgba(214, 221, 235, 30);
-}
-
-QComboBox::drop-down:pressed {
-    background-color: rgba(214, 221, 235, 50);
-}
-
-/* Flèche du ComboBox */
-QComboBox::down-arrow {
-    image: url(:/icon_gris/chevron-down.svg);
-    width: 12px;
-    height: 12px;
-}
-
-QComboBox::down-arrow:pressed {
-    image: url(:/icon_noir/chevron-down.svg);
-}
-
-/* Liste déroulante */
-QComboBox QAbstractItemView {
-    border: 1px solid #2962FF;
-    border-radius: 4px;
-    background-color: white;
-    selection-background-color: #2962FF;
-    selection-color: white;
-    padding: 2px;
-    outline: none;
-    show-decoration-selected: 1;
-}
-
-QComboBox QAbstractItemView::item {
-    height: 28px;
-    padding-left: 8px;
-    padding-right: 8px;
-    border-bottom: 1px solid rgba(214, 221, 235, 50);
-    color: #4A4A4A;
-}
-
-QComboBox QAbstractItemView::item:last {
-    border-bottom: none;
-}
-
-QComboBox QAbstractItemView::item:hover {
-    background-color: rgba(41, 98, 255, 10);
-    color: #2962FF;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background-color: #2962FF;
-    color: white;
-}
-
-/* ===============================================
-   QDOUBLESPINBOX - AMÉLIORÉ
-   =============================================== */
-
-QDoubleSpinBox, QSpinBox {
-    background-color: rgb(245, 247, 250);
-    border: 1px solid #D6DDEB;
-    border-radius: 4px;
-    padding: 6px 8px;
-    color: #4A4A4A;
-    font-size: 13px;
-    min-height: 18px;
-    selection-background-color: #2962FF;
-}
-
-QDoubleSpinBox:hover, QSpinBox:hover {
-    border-color: #2962FF;
-    background-color: rgb(250, 251, 253);
-}
-
-QDoubleSpinBox:focus, QSpinBox:focus {
-    border: 1px solid #2962FF;
-    outline: none;
-}
-
-/* Bouton UP (Incrément) - SANS BORDURE */
-QDoubleSpinBox::up-button, QSpinBox::up-button {
-    subcontrol-origin: border;
-    subcontrol-position: top right;
-    width: 18px;
-    height: 10px;
-    border: none; /* Bordure supprimée */
-    background-color: transparent;
-    margin-top: 1px;
-    margin-right: 1px;
-}
-
-QDoubleSpinBox::up-button:hover, QSpinBox::up-button:hover {
-    background-color: rgba(214, 221, 235, 30);
-}
-
-QDoubleSpinBox::up-button:pressed, QSpinBox::up-button:pressed {
-    background-color: rgba(214, 221, 235, 50);
-}
-
-/* Bouton DOWN (Décrément) - SANS BORDURE */
-QDoubleSpinBox::down-button, QSpinBox::down-button {
-    subcontrol-origin: border;
-    subcontrol-position: bottom right;
-    width: 18px;
-    height: 10px;
-    border: none; /* Bordure supprimée */
-    background-color: transparent;
-    margin-bottom: 1px;
-    margin-right: 1px;
-}
-
-QDoubleSpinBox::down-button:hover, QSpinBox::down-button:hover {
-    background-color: rgba(214, 221, 235, 30);
-}
-
-QDoubleSpinBox::down-button:pressed, QSpinBox::down-button:pressed {
-    background-color: rgba(214, 221, 235, 50);
-}
-
-/* Flèches des SpinBox */
-QDoubleSpinBox::up-arrow, QSpinBox::up-arrow {
-    image: url(:/icon_gris/chevron-up.svg);
-    width: 8px;
-    height: 8px;
-}
-
-QDoubleSpinBox::up-arrow:hover, QSpinBox::up-arrow:hover {
-    image: url(:/icon_noir/chevron-up.svg);
-}
-
-QDoubleSpinBox::up-arrow:pressed, QSpinBox::up-arrow:pressed {
-    image: url(:/icon_noir/chevron-up.svg);
-}
-
-QDoubleSpinBox::down-arrow, QSpinBox::down-arrow {
-    image: url(:/icon_gris/chevron-down.svg);
-    width: 8px;
-    height: 8px;
-}
-
-QDoubleSpinBox::down-arrow:hover, QSpinBox::down-arrow:hover {
-    image: url(:/icon_noir/chevron-down.svg);
-}
-
-QDoubleSpinBox::down-arrow:pressed, QSpinBox::down-arrow:pressed {
-    image: url(:/icon_noir/chevron-down.svg);
-}
-
-/* Désactiver les flèches */
-QDoubleSpinBox::up-arrow:disabled, QSpinBox::up-arrow:disabled {
-    image: url(:/icon_gris/chevron-up-disabled.svg);
-}
-
-QDoubleSpinBox::down-arrow:disabled, QSpinBox::down-arrow:disabled {
-    image: url(:/icon_gris/chevron-down-disabled.svg);
-}
-
-/* ===============================================
-   QDATEEDIT
-   =============================================== */
-
-QDateEdit {
-    border: 1px solid #D6DDEB;
-    border-radius: 4px;
-    padding: 6px 24px 6px 8px;
-    background-color: rgb(245, 247, 250);
-    color: #4A4A4A;
-    font-size: 13px;
-    min-height: 18px;
-}
-
-QDateEdit:hover {
-    border-color: #2962FF;
-    background-color: rgb(250, 251, 253);
-}
-
-QDateEdit:focus {
-    border: 1px solid #2962FF;
-    outline: none;
-}
-
-QDateEdit::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    border: none;
-    border-left: 1px solid #D6DDEB;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    background-color: rgba(214, 221, 235, 30);
-}
-
-QDateEdit::drop-down:hover {
-    background-color: rgba(214, 221, 235, 60);
-}
-
-QDateEdit::down-arrow {
-    image: url(:/icon_gris/calendar.svg);
-    width: 12px;
-    height: 12px;
-}
-
-/* ===============================================
-   QGROUPBOX
-   =============================================== */
-
 QGroupBox {
-    
-	border:none;
+    border: none;
     border-radius: 4px;
     margin-top: 6px;
-    padding-top: 8px;
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-bottom: 6px;
-    background: rgba(255, 255, 255, 70);
+    padding: 8px 6px 6px 6px;
+    background: rgba(248, 249, 250, 0.8);
     font-weight: 500;
 }
 
@@ -429,82 +172,10 @@ QGroupBox::title {
     subcontrol-origin: margin;
     left: 8px;
     padding: 0 6px;
-    color: #505050;
+    color: #495057;
     font-weight: 600;
     font-size: 13px;
 }
-
-
-
-/* ===============================================
-   BARRES DE DÉFILEMENT PERSONNALISÉES
-   =============================================== */
-
-/* Barre de défilement verticale */
-QScrollBar:vertical {
-    border: none;
-    background-color: rgba(245, 247, 250, 0);
-    width: 10px;
-    margin: 0;
-}
-
-/* Barre de défilement horizontale */
-QScrollBar:horizontal {
-    border: none;
-    background-color: rgba(245, 247, 250, 0);
-    height: 10px;
-    margin: 0;
-}
-
-/* Poignée de la barre de défilement - État normal */
-QScrollBar::handle:vertical,
-QScrollBar::handle:horizontal {
-    background-color: rgba(214, 221, 235, 50);
-    border-radius: 4px;
-    min-height: 20px;
-    min-width: 20px;
-    opacity: 0;
-    transition: opacity 300ms ease, background-color 300ms ease;
-}
-
-/* Poignée de la barre de défilement - Survol */
-QScrollBar::handle:vertical:hover,
-QScrollBar::handle:horizontal:hover {
-    background-color: rgba(41, 98, 255, 150);
-    opacity: 1;
-}
-
-/* Poignée de la barre de défilement - Pressée */
-QScrollBar::handle:vertical:pressed,
-QScrollBar::handle:horizontal:pressed {
-    background-color: rgba(21, 74, 201, 200);
-}
-
-/* Zone d'incrément/décrément - Masquée */
-QScrollBar::add-line:vertical,
-QScrollBar::sub-line:vertical,
-QScrollBar::add-line:horizontal,
-QScrollBar::sub-line:horizontal {
-    border: none;
-    background: none;
-    height: 0;
-    width: 0;
-}
-
-/* Fond de la barre de défilement - Survol */
-QScrollBar:vertical:hover,
-QScrollBar:horizontal:hover {
-    background-color: rgba(245, 247, 250, 30);
-}
-
-/* Coin entre les deux barres de défilement */
-QScrollBar::add-page:vertical,
-QScrollBar::sub-page:vertical,
-QScrollBar::add-page:horizontal,
-QScrollBar::sub-page:horizontal {
-    background: none;
-}
-
 
 </string>
   </property>

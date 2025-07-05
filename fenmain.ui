@@ -291,8 +291,7 @@ QToolButton {
     color: rgb(8, 77, 178);
 }
 
-#btn_effectuer_transaction_compte_courant, 
-#btn_effectuer_transaction_compte_epargne {
+#btn_effectuer_transaction_compte{
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(229, 234, 239);
     color: rgb(73, 80, 87);
@@ -300,8 +299,7 @@ QToolButton {
     padding: 6px 10px;
 }
 
-#btn_effectuer_transaction_compte_epargne:hover,
-#btn_effectuer_transaction_compte_courant:hover {
+#btn_effectuer_transaction_compte:hover {
     background-color: rgba(248, 249, 250, 200);
 }
 
@@ -1192,7 +1190,7 @@ QLabel.MontantBadgePending:hover {
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-160</y>
+            <y>0</y>
             <width>1018</width>
             <height>677</height>
            </rect>
@@ -1315,6 +1313,32 @@ QLabel.MontantBadgePending:hover {
                   <property name="spacing">
                    <number>2</number>
                   </property>
+                  <item alignment="Qt::AlignmentFlag::AlignLeft">
+                   <widget class="QWidget" name="widget_34" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_31">
+                     <item>
+                      <widget class="QPushButton" name="btn_effectuer_transaction_compte">
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="text">
+                        <string>Effectuer une transaction</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="btn_consulter_compte">
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="text">
+                        <string>Consulter l'historiquement </string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
                   <item alignment="Qt::AlignmentFlag::AlignHCenter">
                    <widget class="QWidget" name="zone_carte_compte" native="true">
                     <property name="minimumSize">
@@ -1735,47 +1759,6 @@ QLabel.MontantBadgePending:hover {
                              </layout>
                             </widget>
                            </item>
-                           <item>
-                            <widget class="QWidget" name="widget_14" native="true">
-                             <layout class="QHBoxLayout" name="horizontalLayout_13">
-                              <property name="spacing">
-                               <number>2</number>
-                              </property>
-                              <property name="leftMargin">
-                               <number>2</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>2</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>2</number>
-                              </property>
-                              <property name="bottomMargin">
-                               <number>2</number>
-                              </property>
-                              <item alignment="Qt::AlignmentFlag::AlignLeft">
-                               <widget class="QPushButton" name="btn_effectuer_transaction_compte_courant">
-                                <property name="cursor">
-                                 <cursorShape>PointingHandCursor</cursorShape>
-                                </property>
-                                <property name="text">
-                                 <string>Effectuer une transaction</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item alignment="Qt::AlignmentFlag::AlignRight">
-                               <widget class="QPushButton" name="btn_consulter_compte_courant">
-                                <property name="cursor">
-                                 <cursorShape>PointingHandCursor</cursorShape>
-                                </property>
-                                <property name="text">
-                                 <string>Consulter le compte</string>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
-                            </widget>
-                           </item>
                           </layout>
                          </widget>
                         </item>
@@ -2172,47 +2155,6 @@ QLabel.MontantBadgePending:hover {
                              </layout>
                             </widget>
                            </item>
-                           <item>
-                            <widget class="QWidget" name="widget_19" native="true">
-                             <layout class="QHBoxLayout" name="horizontalLayout_20">
-                              <property name="spacing">
-                               <number>2</number>
-                              </property>
-                              <property name="leftMargin">
-                               <number>2</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>2</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>2</number>
-                              </property>
-                              <property name="bottomMargin">
-                               <number>2</number>
-                              </property>
-                              <item alignment="Qt::AlignmentFlag::AlignLeft">
-                               <widget class="QPushButton" name="btn_effectuer_transaction_compte_epargne">
-                                <property name="cursor">
-                                 <cursorShape>PointingHandCursor</cursorShape>
-                                </property>
-                                <property name="text">
-                                 <string>Effectuer une transaction</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item alignment="Qt::AlignmentFlag::AlignRight">
-                               <widget class="QPushButton" name="btn_consulter_compte_epargne">
-                                <property name="cursor">
-                                 <cursorShape>PointingHandCursor</cursorShape>
-                                </property>
-                                <property name="text">
-                                 <string>Consulter le compte</string>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
-                            </widget>
-                           </item>
                           </layout>
                          </widget>
                         </item>
@@ -2293,7 +2235,7 @@ QLabel.MontantBadgePending:hover {
                        <x>0</x>
                        <y>0</y>
                        <width>994</width>
-                       <height>220</height>
+                       <height>200</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_4">

@@ -5,13 +5,25 @@
 #include <QDebug>
 #include <QApplication>
 
+// Instance singleton
+GestionnaireTheme* GestionnaireTheme::s_instance = nullptr;
+
 GestionnaireTheme::GestionnaireTheme(QWidget* zoneBoutonBascule, QObject* parent)
     : QObject(parent), m_zoneBoutonBascule(zoneBoutonBascule), m_boutonBasculeChangertheme(nullptr)
 {
-    QSettings settings("MyBank", "Theme");
-    m_modeSombreActive = settings.value("themeSombre", false).toBool();
+    m_modeSombreActive = chargerTheme();
 
-    configurerBoutonBasculeThemeCouleur();
+    if (m_zoneBoutonBascule) {
+        configurerBoutonBasculeThemeCouleur();
+    }
+}
+
+GestionnaireTheme* GestionnaireTheme::instance()
+{
+    if (!s_instance) {
+        s_instance = new GestionnaireTheme();
+    }
+    return s_instance;
 }
 
 bool GestionnaireTheme::estThemeSombreActif() const
@@ -27,12 +39,11 @@ void GestionnaireTheme::forcerTheme(bool themeSombre)
         m_boutonBasculeChangertheme->blockSignals(false);
     }
 
-    QSettings settings("MyBank", "Theme");
-    settings.setValue("themeSombre", themeSombre);
+    sauvegarderTheme(themeSombre);
     m_modeSombreActive = themeSombre;
 
     emit themeChange(themeSombre);
-
+    emit themeChangeGlobal(themeSombre);
 }
 
 void GestionnaireTheme::configurerBoutonBasculeThemeCouleur()
@@ -72,8 +83,7 @@ void GestionnaireTheme::gererBasculeThemeCouleur(bool estActive)
 
 void GestionnaireTheme::initialiserThemeCouleur(QWidget* fenetrePrincipale)
 {
-    QSettings settings("MyBank", "Theme");
-    bool themeSombreActif = settings.value("themeSombre", false).toBool();
+    bool themeSombreActif = chargerTheme();
     m_modeSombreActive = themeSombreActif;
 
     QString cheminTheme = themeSombreActif
@@ -94,17 +104,39 @@ void GestionnaireTheme::initialiserThemeCouleur(QWidget* fenetrePrincipale)
     if (m_boutonBasculeChangertheme) {
         m_boutonBasculeChangertheme->blockSignals(true);
         m_boutonBasculeChangertheme->definirEtatBascule(themeSombreActif);
-        m_boutonBasculeChangertheme->blockSignals(false);
-    }
-
-
-    if (m_boutonBasculeChangertheme) {
-        m_boutonBasculeChangertheme->blockSignals(true);
-        m_boutonBasculeChangertheme->definirEtatBascule(themeSombreActif);
-
-        // Forcez une mise à jour immédiate
         m_boutonBasculeChangertheme->update();
-
         m_boutonBasculeChangertheme->blockSignals(false);
     }
+}
+
+void GestionnaireTheme::appliquerThemeAuthentification(QWidget* fenetreAuth)
+{
+    if (!fenetreAuth) return;
+
+    QString cheminTheme = m_modeSombreActive
+                              ? ":/themes_authen/theme_sombre.txt"
+                              : ":/themes_authen/theme_clair.txt";
+
+    QFile fichierTheme(cheminTheme);
+    if (fichierTheme.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&fichierTheme);
+        QString styleSheet = in.readAll();
+        fenetreAuth->setStyleSheet(styleSheet);
+        fichierTheme.close();
+    } else {
+        qWarning() << "Impossible de charger le fichier de thème d'authentification:" << cheminTheme;
+        fenetreAuth->setStyleSheet("");
+    }
+}
+
+void GestionnaireTheme::sauvegarderTheme(bool themeSombre)
+{
+    QSettings settings("MyBank", "Theme");
+    settings.setValue("themeSombre", themeSombre);
+}
+
+bool GestionnaireTheme::chargerTheme()
+{
+    QSettings settings("MyBank", "Theme");
+    return settings.value("themeSombre", false).toBool();
 }

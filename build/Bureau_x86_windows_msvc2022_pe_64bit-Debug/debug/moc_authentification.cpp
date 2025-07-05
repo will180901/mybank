@@ -48,6 +48,9 @@ static constexpr auto qt_meta_stringdata_ZN16AuthentificationE = QtMocHelpers::s
     "erreurAuthentification",
     "message",
     "afficherFenetre",
+    "appliquerTheme",
+    "themeSombre",
+    "synchroniserAvecThemeGlobal",
     "on_btn_creer_compte_zone_connexion_clicked",
     "on_btn_se_connecter_zone_creer_compte_clicked",
     "on_btn_creer_compte_zone_creer_compte_clicked",
@@ -65,7 +68,7 @@ Q_CONSTINIT static const uint qt_meta_data_ZN16AuthentificationE[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      12,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -73,18 +76,20 @@ Q_CONSTINIT static const uint qt_meta_data_ZN16AuthentificationE[] = {
        3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    2,   74,    2, 0x06,    1 /* Public */,
-       6,    1,   79,    2, 0x06,    4 /* Public */,
-       7,    1,   82,    2, 0x06,    6 /* Public */,
+       1,    2,   86,    2, 0x06,    1 /* Public */,
+       6,    1,   91,    2, 0x06,    4 /* Public */,
+       7,    1,   94,    2, 0x06,    6 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       9,    0,   85,    2, 0x0a,    8 /* Public */,
-      10,    0,   86,    2, 0x08,    9 /* Private */,
-      11,    0,   87,    2, 0x08,   10 /* Private */,
-      12,    0,   88,    2, 0x08,   11 /* Private */,
-      13,    0,   89,    2, 0x08,   12 /* Private */,
-      14,    0,   90,    2, 0x08,   13 /* Private */,
-      15,    0,   91,    2, 0x08,   14 /* Private */,
+       9,    0,   97,    2, 0x0a,    8 /* Public */,
+      10,    1,   98,    2, 0x0a,    9 /* Public */,
+      12,    0,  101,    2, 0x0a,   11 /* Public */,
+      13,    0,  102,    2, 0x08,   12 /* Private */,
+      14,    0,  103,    2, 0x08,   13 /* Private */,
+      15,    0,  104,    2, 0x08,   14 /* Private */,
+      16,    0,  105,    2, 0x08,   15 /* Private */,
+      17,    0,  106,    2, 0x08,   16 /* Private */,
+      18,    0,  107,    2, 0x08,   17 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString, 0x80000000 | 4,    3,    5,
@@ -92,6 +97,8 @@ Q_CONSTINIT static const uint qt_meta_data_ZN16AuthentificationE[] = {
     QMetaType::Void, QMetaType::QString,    8,
 
  // slots: parameters
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   11,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -124,6 +131,11 @@ Q_CONSTINIT const QMetaObject Authentification::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'afficherFenetre'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'appliquerTheme'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'synchroniserAvecThemeGlobal'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_btn_creer_compte_zone_connexion_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_btn_se_connecter_zone_creer_compte_clicked'
@@ -149,12 +161,14 @@ void Authentification::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 1: _t->compteUtilisateurCree((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 2: _t->erreurAuthentification((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 3: _t->afficherFenetre(); break;
-        case 4: _t->on_btn_creer_compte_zone_connexion_clicked(); break;
-        case 5: _t->on_btn_se_connecter_zone_creer_compte_clicked(); break;
-        case 6: _t->on_btn_creer_compte_zone_creer_compte_clicked(); break;
-        case 7: _t->on_btn_se_connecter_zone_connexion_clicked(); break;
-        case 8: _t->viderMessagesErreur(); break;
-        case 9: _t->reinitialiserFormulaires(); break;
+        case 4: _t->appliquerTheme((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 5: _t->synchroniserAvecThemeGlobal(); break;
+        case 6: _t->on_btn_creer_compte_zone_connexion_clicked(); break;
+        case 7: _t->on_btn_se_connecter_zone_creer_compte_clicked(); break;
+        case 8: _t->on_btn_creer_compte_zone_creer_compte_clicked(); break;
+        case 9: _t->on_btn_se_connecter_zone_connexion_clicked(); break;
+        case 10: _t->viderMessagesErreur(); break;
+        case 11: _t->reinitialiserFormulaires(); break;
         default: ;
         }
     }
@@ -203,14 +217,14 @@ int Authentification::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 12)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 12;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 10)
+        if (_id < 12)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 10;
+        _id -= 12;
     }
     return _id;
 }

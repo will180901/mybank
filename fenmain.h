@@ -41,16 +41,16 @@ private slots:
     void on_btn_dashboard_barre_latterale_clicked();
     void on_btn_historique_barre_latterale_clicked();
     void on_btn_parametres_barre_latterale_clicked();
-    void on_btn_consulter_compte_epargne_clicked();
-    void on_btn_consulter_compte_courant_clicked();
-    void on_btn_effectuer_transaction_compte_courant_clicked();
-    void on_btn_effectuer_transaction_compte_epargne_clicked();
+    void on_btn_effectuer_transaction_compte_clicked();
+    void on_btn_consulter_compte_clicked();
     void on_btn_voir_liste_complete_transaction_clicked();
     void on_btn_ajouter_compte_courant_clicked();
     void on_btn_ajouter_compte_epargne_clicked();
     void on_btn_modifier_info_tutilaire_parametre_clicked();
     void on_btn_deconnexion_barre_latterale_clicked();
     void appliquerTheme(bool themeSombre);
+
+
 
 signals:
     void demandeDeconnexion();

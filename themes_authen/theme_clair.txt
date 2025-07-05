@@ -1,0 +1,164 @@
+
+* {
+    
+	 /*border: 1px solid rgb(0, 0, 0); */
+	 color: rgb(74, 74, 74);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+#Authentification,#widget,#page,#page_2{
+
+		 background-color: rgb(248, 249, 250);
+        border: none;
+
+}
+
+#zone_message_erreur_page_creer_compte,#zone_message_erreur_page_se_connecter{
+
+		
+	font: italic 8pt "Segoe UI";
+
+	
+	color: rgb(186, 2, 45);
+
+}
+
+
+#btn_se_connecter_zone_creer_compte,#btn_creer_compte_zone_connexion{
+
+
+    background-color: rgb(245, 247, 250);
+    border: 1px solid rgb(214, 221, 235);
+    color: rgb(74, 74, 74);
+    border-radius: 4px;
+    padding: 6px 10px;
+
+}
+
+
+
+#btn_se_connecter_zone_creer_compte:hover , #btn_creer_compte_zone_connexion:hover{
+
+   background-color: rgb(41, 98, 255);
+	
+	color: rgb(255, 255, 255);
+}
+
+
+#btn_mot_de_passe_oublier{
+
+		border:none ;
+		background:transparent ;
+		color:rgb(41, 98, 255);
+
+	
+	font: 700 8pt "Segoe UI";
+
+
+}
+
+#btn_mot_de_passe_oublier:hover{
+
+		color:rgb(41, 98, 255,0.2);
+
+}
+
+
+
+/* ===============================================
+   CONTENEURS ET PAGES PRINCIPALES
+   =============================================== */
+
+
+
+#carte_connexion , #carte_creer_compte {
+    background-color: rgb(255, 255, 255);
+    border-radius: 4px;
+    border: 1px solid rgb(214, 221, 235);
+}
+
+
+
+/* ===============================================
+   INPUTS DE BASE
+   =============================================== */
+
+
+QLineEdit, QTextEdit {
+    background-color: rgb(245, 247, 250);
+    border: 1px solid #D6DDEB;
+    border-radius: 4px;
+    padding: 6px;
+    color: #4A4A4A;
+}
+
+QLineEdit:hover, QTextEdit:hover {
+    border: 1px solid #2962FF;
+    background-color: rgb(250, 251, 253);
+}
+
+QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QDoubleSpinBox:focus {
+    border: 1px solid #2962FF;
+    outline: none;
+}
+
+
+/* ===============================================
+   BOUTONS STANDARDS
+   =============================================== */
+
+QPushButton {
+    background-color: rgb(41, 98, 255);
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    min-height: 18px;
+}
+
+QPushButton:hover {
+    background-color: rgb(26, 84, 221);
+}
+
+QPushButton:pressed {
+    background-color: rgb(21, 74, 201);
+}
+
+QToolButton {
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+
+/* ===============================================
+   SÉPARATEURS
+   =============================================== */
+
+Line {
+    background-color: rgb(37, 38, 40);
+    border-radius: 1px;
+    border: 1px solid rgb(37, 38, 40);
+    width: 1px;
+}
+
+
+QGroupBox {
+    border: none;
+    border-radius: 4px;
+    margin-top: 6px;
+    padding: 8px 6px 6px 6px;
+    background: rgba(248, 249, 250, 0.8);
+    font-weight: 500;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 8px;
+    padding: 0 6px;
+    color: #495057;
+    font-weight: 600;
+    font-size: 13px;
+}
+

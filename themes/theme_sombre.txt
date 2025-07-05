@@ -259,18 +259,16 @@ QToolButton {
     color: rgb(29, 78, 216);
 }
 
-#btn_effectuer_transaction_compte_courant, 
-#btn_effectuer_transaction_compte_epargne {
-    background-color: rgb(55, 65, 81);
-    border: 1px solid rgb(75, 85, 99);
-    color: rgb(209, 213, 219);
+#btn_effectuer_transaction_compte{
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(229, 234, 239);
+    color: rgb(73, 80, 87);
     border-radius: 4px;
     padding: 6px 10px;
 }
 
-#btn_effectuer_transaction_compte_epargne:hover,
-#btn_effectuer_transaction_compte_courant:hover {
-    background-color: rgba(75, 85, 99, 200);
+#btn_effectuer_transaction_compte:hover {
+    background-color: rgba(248, 249, 250, 200);
 }
 
 #btn_voir_liste_complete_transaction:hover {

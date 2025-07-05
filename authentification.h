@@ -10,6 +10,7 @@
 
 #include "utilitairesmotdepasse.h"
 #include "creationbd.h"
+#include "gestionnairetheme.h"
 
 namespace Ui {
 class Authentification;
@@ -47,6 +48,8 @@ signals:
 
 public slots:
     void afficherFenetre(); // Nouveau slot pour réafficher l'authentification
+    void appliquerTheme(bool themeSombre);
+    void synchroniserAvecThemeGlobal();
 
 private slots:
     // Navigation entre les pages
@@ -107,6 +110,10 @@ private:
 
     // Gestion des événements
     bool eventFilter(QObject* obj, QEvent* event) override;
+
+    // changement de thème
+    void connecterSignauxTheme();
+    void initialiserTheme();
 
 
 };

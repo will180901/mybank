@@ -2592,5 +2592,7 @@
         <file>icon_vert_succes/zoom-out.svg</file>
         <file>themes/theme_clair.txt</file>
         <file>themes/theme_sombre.txt</file>
+        <file>themes_authen/theme_sombre.txt</file>
+        <file>themes_authen/theme_clair.txt</file>
     </qresource>
 </RCC>
