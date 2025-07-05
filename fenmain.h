@@ -15,6 +15,7 @@
 
 #include <QMainWindow>
 #include <QEvent>
+#include <QCloseEvent>  // Ajout pour closeEvent
 
 class fenMain : public QMainWindow
 {
@@ -29,6 +30,7 @@ public:
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
+    void closeEvent(QCloseEvent *event) override;  // Ajout pour gestion fermeture système
 
 private slots:
     void on_btn_valider_transaction_clicked();
@@ -80,6 +82,7 @@ private:
     void afficherTop5DernieresTransactions();
     void chargerHistoriqueTransactions();
     void mettreAJourStyleBoutonsLateraux();
+    void sauvegarderDonnees();  // Nouvelle méthode centralisée
 };
 
 #endif // FENMAIN_H

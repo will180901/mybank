@@ -5,6 +5,10 @@
 #include <QMouseEvent>
 #include <QPainterPath>
 #include <QGraphicsBlurEffect>
+#include <QGuiApplication>
+
+// Initialisation de la variable statique
+int WidgetNotificationModerne::decalageY = 0;
 
 WidgetNotificationModerne::WidgetNotificationModerne(QWidget *parent)
     : QWidget(parent)
@@ -20,7 +24,7 @@ WidgetNotificationModerne::WidgetNotificationModerne(QWidget *parent)
     , typeActuel(Information)
     , timerFermeture(nullptr)
     , fermetureAutomatiqueActivee(true)
-    , dureeAffichage(5000)
+    , dureeAffichage(5000) // 5 secondes par défaut
     , animationEnCours(false)
 {
     configurerInterface();
@@ -46,10 +50,25 @@ WidgetNotificationModerne::WidgetNotificationModerne(QWidget *parent)
 WidgetNotificationModerne::~WidgetNotificationModerne()
 {
     // Arrêter les animations pour éviter les callbacks sur objet détruit
-    if (animationEntree) animationEntree->stop();
-    if (animationSortie) animationSortie->stop();
-    if (animationOpacite) animationOpacite->stop();
-    if (timerFermeture) timerFermeture->stop();
+    if (animationEntree) {
+        animationEntree->stop();
+        animationEntree->deleteLater();
+    }
+    if (animationSortie) {
+        animationSortie->stop();
+        animationSortie->deleteLater();
+    }
+    if (animationOpacite) {
+        animationOpacite->stop();
+        animationOpacite->deleteLater();
+    }
+    if (timerFermeture) {
+        timerFermeture->stop();
+        timerFermeture->deleteLater();
+    }
+
+    // Réinitialiser le décalage quand la dernière notification est fermée
+    decalageY = 0;
 }
 
 void WidgetNotificationModerne::configurerInterface()
@@ -63,16 +82,13 @@ void WidgetNotificationModerne::configurerInterface()
     labelIcone = new QLabel(this);
     labelIcone->setFixedSize(24, 24);
     labelIcone->setAlignment(Qt::AlignCenter);
-    labelIcone->setStyleSheet("QLabel { font-size: 18px; font-weight: bold; }");
 
     // Label pour le titre
     labelTitre = new QLabel(this);
-    labelTitre->setStyleSheet("QLabel { font-size: 14px; font-weight: bold; }");
     labelTitre->setWordWrap(true);
 
     // Label pour le message
     labelMessage = new QLabel(this);
-    labelMessage->setStyleSheet("QLabel { font-size: 12px; }");
     labelMessage->setWordWrap(true);
     labelMessage->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
@@ -128,7 +144,28 @@ void WidgetNotificationModerne::configurerAnimations()
 
     // Connecter les animations
     connect(animationEntree, &QPropertyAnimation::finished, this, &WidgetNotificationModerne::animationTerminee);
-    connect(animationSortie, &QPropertyAnimation::finished, this, &QWidget::close);
+    connect(animationSortie, &QPropertyAnimation::finished, this, [this]() {
+        decalageY -= height() + 10; // Réduire le décalage
+        close();
+    });
+}
+
+QScreen* WidgetNotificationModerne::obtenirEcranActuel()
+{
+    if (parentWidget()) {
+        return parentWidget()->screen();
+    }
+
+    // Obtenir l'écran sous le curseur
+    QPoint cursorPos = QCursor::pos();
+    for (QScreen *screen : QGuiApplication::screens()) {
+        if (screen->geometry().contains(cursorPos)) {
+            return screen;
+        }
+    }
+
+    // Fallback à l'écran principal
+    return QApplication::primaryScreen();
 }
 
 void WidgetNotificationModerne::afficherNotification(const QString &titre, const QString &message, TypeNotification type)
@@ -184,9 +221,26 @@ void WidgetNotificationModerne::configurerStyle(TypeNotification type)
     iconeUnicode = obtenirIconeUnicode(type);
 
     // Appliquer les couleurs dynamiquement
+    QString styleBouton = QString(
+                              "QPushButton {"
+                              "    background-color: rgba(255, 255, 255, 0.2);"
+                              "    color: %1;"
+                              "    border: none;"
+                              "    border-radius: 12px;"
+                              "    font-size: 12px;"
+                              "    font-weight: bold;"
+                              "}"
+                              "QPushButton:hover {"
+                              "    background-color: rgba(255, 255, 255, 0.3);"
+                              "}"
+                              "QPushButton:pressed {"
+                              "    background-color: rgba(255, 255, 255, 0.1);"
+                              "}").arg(couleurTexte);
+
     labelIcone->setStyleSheet(QString("QLabel { color: %1; font-size: 18px; font-weight: bold; }").arg(couleurTexte));
     labelTitre->setStyleSheet(QString("QLabel { color: %1; font-size: 14px; font-weight: bold; }").arg(couleurTexte));
     labelMessage->setStyleSheet(QString("QLabel { color: %1; font-size: 12px; }").arg(couleurTexte));
+    boutonFermer->setStyleSheet(styleBouton);
     labelIcone->setText(iconeUnicode);
 
     // Forcer une mise à jour du style
@@ -195,7 +249,7 @@ void WidgetNotificationModerne::configurerStyle(TypeNotification type)
 
 void WidgetNotificationModerne::positionnerWidget()
 {
-    QScreen *screen = this->screen();
+    QScreen *screen = obtenirEcranActuel();
     if (!screen) {
         // Fallback : utiliser l'écran principal
         screen = QApplication::primaryScreen();
@@ -212,9 +266,9 @@ void WidgetNotificationModerne::positionnerWidget()
 
     QRect screenGeometry = screen->availableGeometry();
 
-    // Position finale (centrée horizontalement, en haut)
-    int x = (screenGeometry.width() - width()) / 2;
-    int y = screenGeometry.top() + 50;
+    // Position finale : bas à droite
+    int x = screenGeometry.right() - width() - 20;  // 20px marge droite
+    int y = screenGeometry.bottom() - height() - 20 - decalageY; // 20px marge bas + décalage
 
     // Position de départ (hors écran à droite)
     int startX = screenGeometry.right() + width();
@@ -227,6 +281,9 @@ void WidgetNotificationModerne::positionnerWidget()
 
     // Positionner initialement hors écran
     move(startX, y);
+
+    // Augmenter le décalage pour la prochaine notification
+    decalageY += height() + 10;
 }
 
 void WidgetNotificationModerne::demarrerAnimationEntree()

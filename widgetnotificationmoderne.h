@@ -14,6 +14,7 @@
 #include <QStyleOption>
 #include <QApplication>
 #include <QScreen>
+#include <QGuiApplication>
 
 class WidgetNotificationModerne : public QWidget
 {
@@ -71,6 +72,7 @@ private:
     QString obtenirCouleurFond(TypeNotification type);
     QString obtenirCouleurTexte(TypeNotification type);
     QString obtenirTitreParDefaut(TypeNotification type);
+    QScreen* obtenirEcranActuel();
 
     // Composants UI
     QHBoxLayout *layoutPrincipal;
@@ -96,6 +98,9 @@ private:
     QString couleurFond;
     QString couleurTexte;
     QString iconeUnicode;
+
+    // Empilement
+    static int decalageY;
 };
 
 #endif // WIDGETNOTIFICATIONMODERNE_H

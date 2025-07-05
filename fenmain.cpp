@@ -13,6 +13,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QStyle>
+#include <QCloseEvent>  // Ajout pour closeEvent
 
 fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_id)
     : QMainWindow(parent),
@@ -20,7 +21,7 @@ fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_i
     m_utilisateur_id(utilisateur_id),
     m_soldeVisibleCompteCourant(true),
     m_soldeVisibleCompteEpargne(true),
-    m_soldeAnimation(new AnimationSolde(this)),
+    m_soldeAnimation(new AnimationSolde(this)),  // Parenté à this (gestion auto)
     m_banque("MyBank", m_BD),
     m_creationBD(m_BD)
 {
@@ -87,8 +88,6 @@ fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_i
             );
     });
 
-
-
     connect(m_gestionnaireTheme, &GestionnaireTheme::themeChange,
             this, &fenMain::appliquerTheme);
 
@@ -123,8 +122,6 @@ fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_i
     chargerDonneesDepuisBD();
 }
 
-
-
 void fenMain::appliquerTheme(bool themeSombre)
 {
     QString cheminTheme = themeSombre
@@ -143,36 +140,55 @@ void fenMain::appliquerTheme(bool themeSombre)
     }
 }
 
-
 fenMain::~fenMain()
 {
-    // Sauvegarde des données
+    // Supprimer l'UI
+    delete ui;
+
+    // Ne pas supprimer m_soldeAnimation (géré par parent)
+    // Suppression des gestionnaires (gérés par parent)
+    // Émettre le signal de destruction
+    emit fenetreDetruite();
+}
+
+void fenMain::closeEvent(QCloseEvent *event)
+{
+    sauvegarderDonnees();  // Sauvegarde avant fermeture
+    event->accept();
+}
+
+void fenMain::sauvegarderDonnees()
+{
     QSqlDatabase db = m_creationBD.getDatabase();
-    if (db.isOpen()) {
-        db.transaction();
-        for (CompteBancaire* compte : m_banque.getComptes()) {
-            QSqlQuery query(db);
-            query.prepare("UPDATE comptes SET solde = ?, derniere_operation = ? WHERE numero_compte = ?");
-            query.addBindValue(compte->getSolde());
-            query.addBindValue(compte->getDerniereOperation());
-            query.addBindValue(compte->getNumeroCompte());
-            query.exec();
-        }
-        db.commit();
+    if (!db.isOpen()) {
+        qWarning() << "La base de données n'est pas ouverte lors de la sauvegarde.";
+        return;
     }
 
-    delete ui;
-    delete m_soldeAnimation;
+    if (!db.transaction()) {
+        qWarning() << "Échec de la transaction:" << db.lastError().text();
+        return;
+    }
 
-    // Suppression des gestionnaires
-    delete m_gestionnaireComptes;
-    delete m_gestionnaireTransactions;
-    delete m_gestionnaireHistorique;
-    delete m_gestionnaireTheme;
-    delete m_gestionnaireInterface;
-    delete m_gestionnaireUtilisateur;
+    for (CompteBancaire* compte : m_banque.getComptes()) {
+        QSqlQuery query(db);
+        query.prepare("UPDATE comptes SET solde = ?, derniere_operation = ? WHERE numero_compte = ?");
+        query.addBindValue(compte->getSolde());
+        query.addBindValue(compte->getDerniereOperation());
+        query.addBindValue(compte->getNumeroCompte());
 
-    emit fenetreDetruite();
+        if (!query.exec()) {
+            qWarning() << "Échec de la sauvegarde du compte"
+                       << compte->getNumeroCompte()
+                       << ":" << query.lastError().text();
+            db.rollback();
+            return;
+        }
+    }
+
+    if (!db.commit()) {
+        qWarning() << "Échec du commit:" << db.lastError().text();
+    }
 }
 
 void fenMain::chargerDonneesDepuisBD()
@@ -432,21 +448,7 @@ void fenMain::on_btn_deconnexion_barre_latterale_clicked()
                                   QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::Yes) {
-        // Sauvegarder avant de déconnecter
-        QSqlDatabase db = m_creationBD.getDatabase();
-        if (db.isOpen()) {
-            db.transaction();
-            for (CompteBancaire* compte : m_banque.getComptes()) {
-                QSqlQuery query(db);
-                query.prepare("UPDATE comptes SET solde = ?, derniere_operation = ? WHERE numero_compte = ?");
-                query.addBindValue(compte->getSolde());
-                query.addBindValue(compte->getDerniereOperation());
-                query.addBindValue(compte->getNumeroCompte());
-                query.exec();
-            }
-            db.commit();
-        }
-
+        sauvegarderDonnees();  // Utilisation de la méthode centralisée
         emit demandeDeconnexion();
     }
 }

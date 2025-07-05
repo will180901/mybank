@@ -184,19 +184,22 @@ void Authentification::initialisationBD()
     }
 
     if (!m_creationbd.creerDossierBD()) {
-        qCritical() << "Impossible de créer le dossier de la base de données";
+        QMessageBox::critical(this, "Erreur", "Impossible de créer le dossier de la base de données.");
+        reject();
         return;
     }
 
     m_creationbd.ouvrirBD();
 
     if (!m_creationbd.estOuverte()) {
-        qCritical() << "Impossible d'ouvrir la base de données";
+        QMessageBox::critical(this, "Erreur", "Impossible d'ouvrir la base de données.");
+        reject();
         return;
     }
 
     if (!m_creationbd.creerTables()) {
-        qCritical() << "Impossible de créer les tables";
+        QMessageBox::critical(this, "Erreur", "Impossible de créer les tables.");
+        reject();
         return;
     }
 
@@ -208,9 +211,9 @@ bool Authentification::validerNom(const QString& nom)
 {
     if (nom.isEmpty()) return false;
 
-    // Vérifier que le nom ne contient que des lettres et espaces
-    QRegularExpression regex("^[A-Za-zÀ-ÿ\\s-]+$");
-    return regex.match(nom).hasMatch() && nom.at(0).isLetter();
+    // Vérifier que le nom ne contient que des lettres, espaces simples et tirets
+    QRegularExpression regex("^[A-Za-zÀ-ÿ](?:[A-Za-zÀ-ÿ\\s-]*[A-Za-zÀ-ÿ])?$");
+    return regex.match(nom.simplified()).hasMatch();
 }
 
 bool Authentification::validerEmail(const QString& email)
@@ -224,8 +227,22 @@ bool Authentification::validerEmail(const QString& email)
 // Modifier la fonction validerMotDePasse
 bool Authentification::validerMotDePasse(const QString& motDePasse)
 {
-    // Autoriser mot de passe vide uniquement pour l'admin
-    return motDePasse.length() >= 8 || motDePasse.isEmpty();
+    if (motDePasse.length() < 8) return false;
+    
+    // Vérifier la présence d'au moins une majuscule
+    bool aUneMajuscule = false;
+    // Vérifier la présence d'au moins un chiffre
+    bool aUnChiffre = false;
+    // Vérifier la présence d'au moins un caractère spécial
+    bool aUnCaractereSpecial = false;
+    
+    for (const QChar &c : motDePasse) {
+        if (c.isUpper()) aUneMajuscule = true;
+        else if (c.isDigit()) aUnChiffre = true;
+        else if (!c.isLetterOrNumber()) aUnCaractereSpecial = true;
+    }
+    
+    return aUneMajuscule && aUnChiffre && aUnCaractereSpecial;
 }
 
 void Authentification::viderMessagesErreur()
