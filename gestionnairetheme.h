@@ -17,17 +17,14 @@ public:
     // Instance singleton pour synchronisation globale
     static GestionnaireTheme* instance();
 
-    bool estThemeSombreActif() const;
+    bool estThemeSombreActif() const; // Méthode correcte
     void forcerTheme(bool themeSombre);
     void configurerBoutonBasculeThemeCouleur();
     void initialiserThemeCouleur(QWidget* fenetrePrincipale);
-
-    // Nouvelle méthode pour appliquer le thème à l'authentification
     void appliquerThemeAuthentification(QWidget* fenetreAuth);
 
 signals:
     void themeChange(bool themeSombre);
-    // Nouveau signal pour synchronisation globale
     void themeChangeGlobal(bool themeSombre);
 
 private slots:

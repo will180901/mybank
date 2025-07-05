@@ -15,6 +15,9 @@
 #include <QApplication>
 #include <QStyle>
 #include <QCloseEvent>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QDesktopServices>  // Pour ouvrir le navigateur
 
 fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_id)
     : QMainWindow(parent),
@@ -24,16 +27,38 @@ fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_i
     m_soldeVisibleCompteEpargne(true),
     m_soldeAnimation(new AnimationSolde(this)),
     m_banque("MyBank", m_BD),
-    m_creationBD(m_BD)
+    m_creationBD(m_BD),
+    m_loader(nullptr),
+    m_loaderCount(0)
 {
     ui->setupUi(this);
     this->installEventFilter(this);
+
+    // Configuration du timer de délai minimum
+    m_minimumDisplayTimer.setSingleShot(true);
+    connect(&m_minimumDisplayTimer, &QTimer::timeout, this, &fenMain::arreterLoaderApresDelai);
+
+    // Création et configuration du loader
+    m_loader = new SkeletonLoader(this);
+    m_loader->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_loader->setFixedHeight(4);
+    m_loader->hide();
+    m_loader->setHighlightColor(QColor(180, 220, 255)); // Bleu clair pâle
+
+    // Insertion du loader dans l'interface
+    QVBoxLayout* mainLayout = qobject_cast<QVBoxLayout*>(ui->centralwidget->layout());
+    if (mainLayout) {
+        mainLayout->insertWidget(1, m_loader);
+    } else {
+        qWarning() << "Main layout not found, using fallback positioning";
+        m_loader->setParent(ui->centralwidget);
+        m_loader->setGeometry(0, ui->bar_nav->height(), width(), 4);
+    }
 
     // Initialisation des gestionnaires
     m_gestionnaireComptes = new GestionnaireComptes(m_banque, m_creationBD, m_utilisateur_id, this);
     m_gestionnaireTransactions = new GestionnaireTransactions(m_banque, m_creationBD, this);
     m_gestionnaireHistorique = new GestionnaireHistorique(m_creationBD, m_utilisateur_id, this);
-   // m_gestionnaireTheme = new GestionnaireTheme(ui->zone_bouton_bascule, this);
     m_gestionnaireInterface = new GestionnaireInterface(this);
     m_gestionnaireUtilisateur = new GestionnaireUtilisateur(m_creationBD, m_utilisateur_id, this);
 
@@ -52,6 +77,9 @@ fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_i
 
     // Initialiser le thème
     m_gestionnaireTheme->initialiserThemeCouleur(this);
+    if (m_loader) {
+        m_loader->setTheme(m_gestionnaireTheme->estThemeSombreActif());
+    }
 
     // Connexion des signaux des gestionnaires
     connect(m_gestionnaireComptes, &GestionnaireComptes::comptesModifies, this, [this]() {
@@ -136,6 +164,49 @@ fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_i
     chargerDonneesDepuisBD();
 }
 
+fenMain::~fenMain()
+{
+    delete ui;
+    emit fenetreDetruite();
+}
+
+// Gestion du loader
+void fenMain::demarrerLoader()
+{
+    if (m_loaderCount == 0) {
+        m_loaderTimer.start();
+        m_loader->show();
+        m_loader->demarrerAnimation();
+        qApp->processEvents();
+
+        // Démarrer le timer de délai minimum de 5 secondes
+        m_minimumDisplayTimer.start(5000);
+    }
+    m_loaderCount++;
+}
+
+void fenMain::arreterLoader()
+{
+    if (m_loaderCount > 0) {
+        m_loaderCount--;
+    }
+
+    // On ne cache pas immédiatement, on attend que le timer expire
+    // La méthode arreterLoaderApresDelai s'occupera de la fermeture
+}
+
+void fenMain::arreterLoaderApresDelai()
+{
+    // Si le timer est encore actif, ne rien faire
+    if (m_minimumDisplayTimer.isActive()) return;
+
+    if (m_loaderCount <= 0) {
+        m_loaderCount = 0;
+        m_loader->arreterAnimation();
+        m_loader->hide();
+    }
+}
+
 void fenMain::appliquerTheme(bool themeSombre)
 {
     QString cheminTheme = themeSombre
@@ -152,22 +223,24 @@ void fenMain::appliquerTheme(bool themeSombre)
         qWarning() << "Impossible de charger le fichier de thème:" << cheminTheme;
         this->setStyleSheet("");
     }
-}
 
-fenMain::~fenMain()
-{
-    delete ui;
-    emit fenetreDetruite();
+    if (m_loader) {
+        m_loader->setTheme(themeSombre);
+    }
 }
 
 void fenMain::closeEvent(QCloseEvent *event)
 {
+    // Arrêter le timer pour éviter les callbacks après fermeture
+    m_minimumDisplayTimer.stop();
     sauvegarderDonnees();
     event->accept();
 }
 
 void fenMain::sauvegarderDonnees()
 {
+    LoaderGuard guard(this);
+
     QSqlDatabase db = m_creationBD.getDatabase();
     if (!db.isOpen()) {
         qWarning() << "La base de données n'est pas ouverte lors de la sauvegarde.";
@@ -202,6 +275,8 @@ void fenMain::sauvegarderDonnees()
 
 void fenMain::chargerDonneesDepuisBD()
 {
+    LoaderGuard guard(this);
+
     m_gestionnaireUtilisateur->chargerInformationsUtilisateur(ui->labelBienvenue);
     m_banque.chargerTousLesComptes();
     m_gestionnaireComptes->mettreAJourAffichageComptes(
@@ -222,11 +297,13 @@ void fenMain::chargerDonneesDepuisBD()
 
 void fenMain::afficherTop5DernieresTransactions()
 {
+    LoaderGuard guard(this);
     m_gestionnaireHistorique->afficherTop5DernieresTransactions(ui->tableWidget_top_5_derniere_transaction);
 }
 
 void fenMain::chargerHistoriqueTransactions()
 {
+    LoaderGuard guard(this);
     m_gestionnaireHistorique->chargerHistoriqueComplet(ui->tableWidget_historique_transaction);
 }
 
@@ -270,9 +347,11 @@ bool fenMain::eventFilter(QObject* obj, QEvent* event)
 
 void fenMain::on_btn_valider_transaction_clicked()
 {
+    LoaderGuard guard(this);
+
     int indexOnglet = ui->mes_onglets_page_transaction->currentIndex();
 
-    if (indexOnglet == 0) { // Onglet dépôt/retrait
+    if (indexOnglet == 0) {
         QString numeroCompte = ui->sai_numero_compte_onglet_depot_retrait->text().trimmed();
         double montant = ui->doubleSpinBox_montant_onglet_depot_retrait->value();
         QString motif = ui->textEdit_motif_onglet_depot_retrait->toPlainText().trimmed();
@@ -301,7 +380,7 @@ void fenMain::on_btn_valider_transaction_clicked()
             m_gestionnaireTransactions->effectuerRetrait(compte, montant, motif);
             WidgetNotificationModerne::afficherInformation("Succès", "Retrait effectué avec succès", this);
         }
-    } else if (indexOnglet == 1) { // Onglet virement
+    } else if (indexOnglet == 1) {
         QString compteSource = ui->sai_numero_compte_source_onglet_virement->text().trimmed();
         QString compteDest = ui->sai_numero_compte_beneficiaire_onglet_virement->text().trimmed();
         double montant = ui->doubleSpinBox_montant_onglet_virement->value();
@@ -338,6 +417,8 @@ void fenMain::on_btn_valider_transaction_clicked()
 
 void fenMain::on_btn_supprimer_compte_courant_clicked()
 {
+    LoaderGuard guard(this);
+
     WidgetNotificationModerne::afficherConfirmationCritique(
         "Confirmation",
         "Voulez-vous vraiment supprimer votre compte courant?",
@@ -351,6 +432,8 @@ void fenMain::on_btn_supprimer_compte_courant_clicked()
 
 void fenMain::on_btn_supprimer_compte_epargne_clicked()
 {
+    LoaderGuard guard(this);
+
     WidgetNotificationModerne::afficherConfirmationCritique(
         "Confirmation",
         "Voulez-vous vraiment supprimer votre compte épargne?",
@@ -410,26 +493,18 @@ void fenMain::on_btn_parametres_barre_latterale_clicked()
     mettreAJourStyleBoutonsLateraux();
 }
 
-
-
 void fenMain::on_btn_effectuer_transaction_compte_clicked()
 {
-
     ui->mes_pages->setCurrentWidget(ui->page_transaction);
     ui->mes_onglets_page_transaction->setCurrentWidget(ui->onglet_depot_retrait);
     mettreAJourStyleBoutonsLateraux();
-
 }
-
 
 void fenMain::on_btn_consulter_compte_clicked()
 {
-
     ui->mes_pages->setCurrentWidget(ui->page_historique);
     mettreAJourStyleBoutonsLateraux();
-
 }
-
 
 void fenMain::on_btn_voir_liste_complete_transaction_clicked()
 {
@@ -439,18 +514,24 @@ void fenMain::on_btn_voir_liste_complete_transaction_clicked()
 
 void fenMain::on_btn_ajouter_compte_courant_clicked()
 {
+    LoaderGuard guard(this);
+
     m_gestionnaireComptes->creerCompteCourant();
     WidgetNotificationModerne::afficherInformation("Succès", "Compte courant créé", this);
 }
 
 void fenMain::on_btn_ajouter_compte_epargne_clicked()
 {
+    LoaderGuard guard(this);
+
     m_gestionnaireComptes->creerCompteEpargne();
     WidgetNotificationModerne::afficherInformation("Succès", "Compte épargne créé", this);
 }
 
 void fenMain::on_btn_modifier_info_tutilaire_parametre_clicked()
 {
+    LoaderGuard guard(this);
+
     QString nouveauNom = ui->lineEdit_nom_titulaire_parametre->text().trimmed();
     QString nouvelEmail = ui->lineEdit_email_titulaire_parametre->text().trimmed();
     QString nouveauMotDePasse = ui->lineEdit_mot_de_passe_parametre->text();
@@ -472,4 +553,23 @@ void fenMain::on_btn_deconnexion_barre_latterale_clicked()
         },
         this
         );
+}
+
+void fenMain::on_btn_aide_et_supports_barre_latterale_clicked()
+{
+    // Chemin absolu vers le fichier de rapport
+    QString cheminRapport = "D:/projets/MyBank/rapport/Rapport_projet_application_de_gestion_bancaire.html";
+
+    // Vérifier si le fichier existe
+    if (QFile::exists(cheminRapport)) {
+        // Ouvrir dans le navigateur par défaut
+        QDesktopServices::openUrl(QUrl::fromLocalFile(cheminRapport));
+    } else {
+        // Afficher une erreur si le fichier n'est pas trouvé
+        WidgetNotificationModerne::afficherErreur(
+            "Fichier introuvable",
+            "Le fichier de rapport n'a pas été trouvé à l'emplacement :\n" + cheminRapport,
+            this
+            );
+    }
 }

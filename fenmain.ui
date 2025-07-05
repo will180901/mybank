@@ -43,7 +43,7 @@
    CONTENEURS ET PAGES PRINCIPALES
    ===============================================*/
 
-#centralMain, #fenMain, 
+#centralwidget, #fenMain, 
 #page_dashboard, #page_transaction, #page_parametres, #scrollAreaWidgetContents, 
 #scrollAreaWidgetContents_2,
 #scrollArea_2,
@@ -901,7 +901,7 @@ QLabel.MontantBadgePending:hover {
     border: 1px solid rgba(245, 158, 11, 0.5);
 }</string>
   </property>
-  <widget class="QWidget" name="centralMain">
+  <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <property name="spacing">
      <number>0</number>

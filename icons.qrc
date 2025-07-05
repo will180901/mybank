@@ -2594,5 +2594,6 @@
         <file>themes/theme_sombre.txt</file>
         <file>themes_authen/theme_sombre.txt</file>
         <file>themes_authen/theme_clair.txt</file>
+        <file>rapport/Rapport_projet_application_de_gestion_bancaire.html</file>
     </qresource>
 </RCC>

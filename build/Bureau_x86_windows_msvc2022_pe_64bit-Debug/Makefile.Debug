@@ -2864,7 +2864,8 @@ debug\qrc_icons.cpp: ..\..\icons.qrc \
 		..\..\icon_noir\rotate-ccw.svg \
 		..\..\icon_noir\user-minus.svg \
 		..\..\icon_noir\codepen.svg \
-		..\..\icon_noir\phone-outgoing.svg
+		..\..\icon_noir\phone-outgoing.svg \
+		..\..\rapport\Rapport_projet_application_de_gestion_bancaire.html
 	C:\Qt\6.8.3\msvc2022_64\bin\rcc.exe -name icons --no-zstd ..\..\icons.qrc -o debug\qrc_icons.cpp
 
 compiler_moc_predefs_make_all: debug\moc_predefs.h
@@ -3753,6 +3754,8 @@ debug\moc_fenmain.cpp: ..\..\fenmain.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\qgraphicseffect.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\QStyle \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QMap \
+		..\..\skeletonloader.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QColor \
 		ui_fenmain.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QVariant \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QIcon \
@@ -3790,6 +3793,12 @@ debug\moc_fenmain.cpp: ..\..\fenmain.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\QVBoxLayout \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QEvent \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QCloseEvent \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QElapsedTimer \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QTimer \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qtimer.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qbasictimer.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QDesktopServices \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\qdesktopservices.h \
 		debug\moc_predefs.h \
 		C:\Qt\6.8.3\msvc2022_64\bin\moc.exe
 	C:\Qt\6.8.3\msvc2022_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/projets/MyBank/build/Bureau_x86_windows_msvc2022_pe_64bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.3/msvc2022_64/mkspecs/win32-msvc -ID:/projets/MyBank -IC:/Qt/6.8.3/msvc2022_64/include -IC:/Qt/6.8.3/msvc2022_64/include/QtWidgets -IC:/Qt/6.8.3/msvc2022_64/include/QtGui -IC:/Qt/6.8.3/msvc2022_64/include/QtSql -IC:/Qt/6.8.3/msvc2022_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.43.34808\include" -I"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\VS\include" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.22621.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\um" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\shared" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\winrt" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\cppwinrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um" ..\..\fenmain.h -o debug\moc_fenmain.cpp
@@ -5674,6 +5683,7 @@ debug\moc_skeletonloader.cpp: ..\..\skeletonloader.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qvariantanimation.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qabstractanimation.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qeasingcurve.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QColor \
 		debug\moc_predefs.h \
 		C:\Qt\6.8.3\msvc2022_64\bin\moc.exe
 	C:\Qt\6.8.3\msvc2022_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/projets/MyBank/build/Bureau_x86_windows_msvc2022_pe_64bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.3/msvc2022_64/mkspecs/win32-msvc -ID:/projets/MyBank -IC:/Qt/6.8.3/msvc2022_64/include -IC:/Qt/6.8.3/msvc2022_64/include/QtWidgets -IC:/Qt/6.8.3/msvc2022_64/include/QtGui -IC:/Qt/6.8.3/msvc2022_64/include/QtSql -IC:/Qt/6.8.3/msvc2022_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.43.34808\include" -I"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\VS\include" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.22621.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\um" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\shared" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\winrt" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\cppwinrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um" ..\..\skeletonloader.h -o debug\moc_skeletonloader.cpp
@@ -8856,6 +8866,8 @@ debug\main.obj: ..\..\main.cpp ..\..\authentification.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\qgraphicseffect.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\QStyle \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QMap \
+		..\..\skeletonloader.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QColor \
 		ui_fenmain.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QVariant \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QIcon \
@@ -8886,7 +8898,13 @@ debug\main.obj: ..\..\main.cpp ..\..\authentification.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\qtextedit.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\QVBoxLayout \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QEvent \
-		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QCloseEvent
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QCloseEvent \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QElapsedTimer \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QTimer \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qtimer.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qbasictimer.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QDesktopServices \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\qdesktopservices.h
 
 debug\fenmain.obj: ..\..\fenmain.cpp ..\..\fenmain.h \
 		..\..\gestionnairecomptes.h \
@@ -9159,6 +9177,8 @@ debug\fenmain.obj: ..\..\fenmain.cpp ..\..\fenmain.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\qgraphicseffect.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\QStyle \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QMap \
+		..\..\skeletonloader.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QColor \
 		ui_fenmain.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QVariant \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QIcon \
@@ -9196,6 +9216,12 @@ debug\fenmain.obj: ..\..\fenmain.cpp ..\..\fenmain.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\QVBoxLayout \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QEvent \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QCloseEvent \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QElapsedTimer \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QTimer \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qtimer.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qbasictimer.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QDesktopServices \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\qdesktopservices.h \
 		..\..\utilitairesmotdepasse.h \
 		..\..\highlightdelegate.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\QStyledItemDelegate \
@@ -9204,9 +9230,6 @@ debug\fenmain.obj: ..\..\fenmain.cpp ..\..\fenmain.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QTextDocument \
 		..\..\widgetnotificationmoderne.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtWidgets\QGraphicsOpacityEffect \
-		C:\Qt\6.8.3\msvc2022_64\include\QtCore\QTimer \
-		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qtimer.h \
-		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qbasictimer.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QFont \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QFontMetrics \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QPainter \
@@ -9622,6 +9645,7 @@ debug\skeletonloader.obj: ..\..\skeletonloader.cpp ..\..\skeletonloader.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qvariantanimation.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qabstractanimation.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtCore\qeasingcurve.h \
+		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QColor \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\QPainter \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\qpainter.h \
 		C:\Qt\6.8.3\msvc2022_64\include\QtGui\qtextoption.h \

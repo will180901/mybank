@@ -11,11 +11,15 @@
 #include "creationbd.h"
 #include "animationsolde.h"
 #include "monboutonbascule.h"
+#include "skeletonloader.h"
 #include "ui_fenmain.h"
 
 #include <QMainWindow>
 #include <QEvent>
-#include <QCloseEvent>  // Ajout pour closeEvent
+#include <QCloseEvent>
+#include <QElapsedTimer>
+#include <QTimer>
+#include <QDesktopServices>  // Ajout pour ouvrir le navigateur
 
 class fenMain : public QMainWindow
 {
@@ -30,7 +34,7 @@ public:
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
-    void closeEvent(QCloseEvent *event) override;  // Ajout pour gestion fermeture système
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_btn_valider_transaction_clicked();
@@ -48,9 +52,8 @@ private slots:
     void on_btn_ajouter_compte_epargne_clicked();
     void on_btn_modifier_info_tutilaire_parametre_clicked();
     void on_btn_deconnexion_barre_latterale_clicked();
+    void on_btn_aide_et_supports_barre_latterale_clicked();  // Nouveau slot
     void appliquerTheme(bool themeSombre);
-
-
 
 signals:
     void demandeDeconnexion();
@@ -68,6 +71,12 @@ private:
     GestionnaireInterface* m_gestionnaireInterface;
     GestionnaireUtilisateur* m_gestionnaireUtilisateur;
 
+    // Loader et gestion des opérations
+    SkeletonLoader* m_loader;
+    int m_loaderCount;
+    QElapsedTimer m_loaderTimer;
+    QTimer m_minimumDisplayTimer; // Nouveau timer pour le délai minimum
+
     // Variables membres
     QString m_utilisateur_id;
     bool m_soldeVisibleCompteCourant;
@@ -82,7 +91,29 @@ private:
     void afficherTop5DernieresTransactions();
     void chargerHistoriqueTransactions();
     void mettreAJourStyleBoutonsLateraux();
-    void sauvegarderDonnees();  // Nouvelle méthode centralisée
+    void sauvegarderDonnees();
+
+    // Gestion du loader
+    void demarrerLoader();
+    void arreterLoader();
+    void arreterLoaderApresDelai(); // Nouvelle méthode
+
+    // Guard RAII pour la gestion automatique du loader
+    class LoaderGuard {
+    public:
+        LoaderGuard(fenMain* fen) : m_fen(fen) {
+            if(m_fen) m_fen->demarrerLoader();
+        }
+        ~LoaderGuard() {
+            if(m_fen) m_fen->arreterLoader();
+        }
+
+        LoaderGuard(const LoaderGuard&) = delete;
+        LoaderGuard& operator=(const LoaderGuard&) = delete;
+
+    private:
+        fenMain* m_fen;
+    };
 };
 
 #endif // FENMAIN_H

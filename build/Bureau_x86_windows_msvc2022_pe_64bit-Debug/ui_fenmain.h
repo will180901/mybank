@@ -38,7 +38,7 @@ QT_BEGIN_NAMESPACE
 class Ui_fenMain
 {
 public:
-    QWidget *centralMain;
+    QWidget *centralwidget;
     QVBoxLayout *verticalLayout_6;
     QWidget *bar_nav;
     QHBoxLayout *horizontalLayout_2;
@@ -300,7 +300,7 @@ public:
 "   CONTENEURS ET PAGES PRINCIPALES\n"
 "   ===============================================*/\n"
 "\n"
-"#centralMain, #fenMain, \n"
+"#centralwidget, #fenMain, \n"
 "#page_dashboard, #page_transaction, #page_parametres, #scrollAreaWidgetContents, \n"
 "#scrollAreaWidgetContents_2,\n"
 "#scrollArea_2,\n"
@@ -322,8 +322,8 @@ public:
 "}\n"
 "\n"
 "#message_page_en_construction {\n"
-"    background-color: "
-                        "rgba(81, 81, 81, 0.1);\n"
+"    background-color"
+                        ": rgba(81, 81, 81, 0.1);\n"
 "}\n"
 "\n"
 "#motif_transaction_depot_retrait {\n"
@@ -364,8 +364,8 @@ public:
 "#BarreRecherche {\n"
 "    border: 1px solid rgba(206, 212, 218, 180);\n"
 "    border-radius: 4px;\n"
-"    background-color: rgba(255"
-                        ", 255, 255, 250);\n"
+"    background-color: rgba(2"
+                        "55, 255, 255, 250);\n"
 "    padding: 6px;\n"
 "}\n"
 "\n"
@@ -403,8 +403,8 @@ public:
 "    background-color: #e9ecef !important;\n"
 "}\n"
 "\n"
-"/*==============="
-                        "================================\n"
+"/*============="
+                        "==================================\n"
 "   CARTES ET GROUPES\n"
 "   ===============================================*/\n"
 "\n"
@@ -436,8 +436,8 @@ public:
 "    margin-top: 6px;\n"
 "    padding: 8px 6px 6px 6px;\n"
 "    background: rgba(248, 249, 250, 0.8);\n"
-"    font-weight: "
-                        "500;\n"
+"    font-weight"
+                        ": 500;\n"
 "}\n"
 "\n"
 "QGroupBox::title {\n"
@@ -484,8 +484,8 @@ public:
 "}\n"
 "\n"
 "#label_decouvert_autorise_compte_courant, #label_numero_de_compte_courant,\n"
-"#label_date_cre"
-                        "ation_compte_courant, #label_derniere_transaction_compte_courant,\n"
+"#label_date_c"
+                        "reation_compte_courant, #label_derniere_transaction_compte_courant,\n"
 "#label_taux_interet_compte_epargne, #label_numero_de_compte_epargne,\n"
 "#label_date_creation_compte_epargne, #label_derniere_transaction_compte_epargne {\n"
 "    color: rgb(85, 85, 85);\n"
@@ -521,8 +521,8 @@ public:
 "}\n"
 "\n"
 "QToolButton {\n"
-"    backg"
-                        "round: transparent;\n"
+"    bac"
+                        "kground: transparent;\n"
 "    border: none;\n"
 "    outline: none;\n"
 "}\n"
@@ -558,8 +558,8 @@ public:
 "    background-color: rgb(255, 255, 255);\n"
 "    border: 1px solid rgb(229, 234, 239);\n"
 "    color: rgb(73, 80, 87);\n"
-"    border-radius: "
-                        "4px;\n"
+"    border-radius"
+                        ": 4px;\n"
 "    padding: 6px 10px;\n"
 "}\n"
 "\n"
@@ -596,8 +596,8 @@ public:
 "#btn_ajouter_compte_epargne:hover {\n"
 "    border: 1px solid rgb(111, 66, 193);\n"
 "    background-color: rgb(248, 249, 250);\n"
-"   "
-                        " color: rgb(111, 66, 193);\n"
+" "
+                        "   color: rgb(111, 66, 193);\n"
 "}\n"
 "\n"
 "#btn_supprimer_compte_courant, #btn_supprimer_compte_epargne {\n"
@@ -632,8 +632,8 @@ public:
 "    border-bottom: 2px solid rgba(73, 80, 87, 0.2);\n"
 "}\n"
 "\n"
-"/*==============================="
-                        "================\n"
+"/*============================="
+                        "==================\n"
 "   \303\211L\303\211MENTS DE FORMULAIRE\n"
 "   ===============================================*/\n"
 "\n"
@@ -1180,13 +1180,13 @@ public:
 "    background-color: rgba(245, 158, 11, 0.3);\n"
 "    border: 1px solid rgba(245, 158, 11, 0.5);\n"
 "}"));
-        centralMain = new QWidget(fenMain);
-        centralMain->setObjectName("centralMain");
-        verticalLayout_6 = new QVBoxLayout(centralMain);
+        centralwidget = new QWidget(fenMain);
+        centralwidget->setObjectName("centralwidget");
+        verticalLayout_6 = new QVBoxLayout(centralwidget);
         verticalLayout_6->setSpacing(0);
         verticalLayout_6->setObjectName("verticalLayout_6");
         verticalLayout_6->setContentsMargins(2, 2, 2, 2);
-        bar_nav = new QWidget(centralMain);
+        bar_nav = new QWidget(centralwidget);
         bar_nav->setObjectName("bar_nav");
         QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Fixed);
         sizePolicy.setHorizontalStretch(0);
@@ -1238,7 +1238,7 @@ public:
 
         verticalLayout_6->addWidget(bar_nav);
 
-        widget_2 = new QWidget(centralMain);
+        widget_2 = new QWidget(centralwidget);
         widget_2->setObjectName("widget_2");
         widget_2->setMinimumSize(QSize(561, 401));
         horizontalLayout_3 = new QHBoxLayout(widget_2);
@@ -2411,7 +2411,7 @@ public:
 
         verticalLayout_6->addWidget(widget_2);
 
-        fenMain->setCentralWidget(centralMain);
+        fenMain->setCentralWidget(centralwidget);
 
         retranslateUi(fenMain);
 

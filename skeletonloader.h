@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPropertyAnimation>
+#include <QColor>
 
 class SkeletonLoader : public QWidget
 {
@@ -13,6 +14,8 @@ public:
     explicit SkeletonLoader(QWidget *parent = nullptr);
     void demarrerAnimation();
     void arreterAnimation();
+    void setTheme(bool darkMode);
+    void setHighlightColor(const QColor& color);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -23,6 +26,8 @@ private:
 
     QPropertyAnimation *m_animation;
     qreal m_gradientPosition;
+    bool m_darkMode;
+    QColor m_highlightColor;
 };
 
 #endif // SKELETONLOADER_H

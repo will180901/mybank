@@ -11,7 +11,7 @@
    CONTENEURS ET PAGES PRINCIPALES
    ===============================================*/
 
-#centralMain, #fenMain, 
+#centralwidget, #fenMain, 
 #page_dashboard, #page_transaction, #page_parametres, #scrollAreaWidgetContents, 
 #scrollAreaWidgetContents_2,
 #scrollArea_2,
