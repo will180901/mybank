@@ -18,6 +18,13 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QDesktopServices>  // Pour ouvrir le navigateur
+#include <QResource>
+#include <QTemporaryFile>
+#include <QUrl>
+#include <QIODevice>
+#include <QDialog>
+#include <QTextBrowser>
+#include <QPushButton>
 
 fenMain::fenMain(CreationBD& m_BD, QWidget *parent, const QString &utilisateur_id)
     : QMainWindow(parent),
@@ -557,18 +564,54 @@ void fenMain::on_btn_deconnexion_barre_latterale_clicked()
 
 void fenMain::on_btn_aide_et_supports_barre_latterale_clicked()
 {
-    // Chemin absolu vers le fichier de rapport
-    QString cheminRapport = "D:/projets/MyBank/rapport/Rapport_projet_application_de_gestion_bancaire.html";
+    // Chemin vers le fichier de ressource
+    QString cheminRessource = ":/rapport/Rapport_projet_application_de_gestion_bancaire.html";
 
-    // Vérifier si le fichier existe
-    if (QFile::exists(cheminRapport)) {
-        // Ouvrir dans le navigateur par défaut
-        QDesktopServices::openUrl(QUrl::fromLocalFile(cheminRapport));
+    // Vérifier si la ressource existe
+    if (QFile::exists(cheminRessource)) {
+        // Créer un fichier temporaire avec extension .html
+        QString cheminTemp = QDir::tempPath() + "/rapport_bancaire_" +
+                             QString::number(QDateTime::currentMSecsSinceEpoch()) + ".html";
+
+        // Lire le contenu de la ressource
+        QFile fichierRessource(cheminRessource);
+        if (fichierRessource.open(QIODevice::ReadOnly)) {
+            QByteArray contenu = fichierRessource.readAll();
+            fichierRessource.close();
+
+            // Écrire dans le fichier temporaire
+            QFile fichierTemp(cheminTemp);
+            if (fichierTemp.open(QIODevice::WriteOnly)) {
+                fichierTemp.write(contenu);
+                fichierTemp.close();
+
+                // Ouvrir dans le navigateur par défaut
+                if (!QDesktopServices::openUrl(QUrl::fromLocalFile(cheminTemp))) {
+                    WidgetNotificationModerne::afficherErreur(
+                        "Erreur d'ouverture",
+                        "Impossible d'ouvrir le fichier de rapport dans le navigateur.",
+                        this
+                        );
+                }
+            } else {
+                WidgetNotificationModerne::afficherErreur(
+                    "Erreur d'écriture",
+                    "Impossible de créer le fichier temporaire.",
+                    this
+                    );
+            }
+        } else {
+            WidgetNotificationModerne::afficherErreur(
+                "Erreur de lecture",
+                "Impossible de lire le fichier de ressource.",
+                this
+                );
+        }
     } else {
-        // Afficher une erreur si le fichier n'est pas trouvé
+        // Afficher une erreur si la ressource n'est pas trouvée
         WidgetNotificationModerne::afficherErreur(
             "Fichier introuvable",
-            "Le fichier de rapport n'a pas été trouvé à l'emplacement :\n" + cheminRapport,
+            "Le fichier de rapport n'a pas été trouvé dans les ressources :\n" + cheminRessource,
             this
             );
     }
